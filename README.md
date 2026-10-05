@@ -66,6 +66,25 @@ Blender의 N 패널 → Kimodo에서 CPP 백엔드를 사용하세요. 이 패�
 
 SOMA30에 없는 상세 손가락 모션 대신 가벼운 기본 굽힘을 적용하고, 임시 수직 방향의 발가락 회전은 원래 대상 리그 자세로 보정합니다. 실제 손가락 모션이 있는 공식 SOMA77에는 이 보정을 적용하지 않습니다.
 
+## 사용한 Git 저장소와 구성요소
+
+이 프로젝트는 다음 외부 프로젝트를 조합하고, 설치·드래그앤드롭·후처리·Blender 연결을 위한 코드를 추가했습니다.
+
+| 저장소 | 사용 목적 | 사용 버전 / 출처 |
+|---|---|---|
+| [Comfy-Org/ComfyUI](https://github.com/Comfy-Org/ComfyUI) | 3D 생성 워크플로 실행 서버 | 고정 커밋 `f1072eb0350638a3390ddb6afbcaa8c6b237c6fd` |
+| [visualbruno/ComfyUI-Trellis2](https://github.com/visualbruno/ComfyUI-Trellis2) | TRELLIS.2 모델 로딩·3D 생성, Windows 네이티브 모듈, 텍스처 투영 코드 기반 | 고정 커밋 `b0e84c0f29857a444e8bcb5b9be2ea218e96efd0` |
+| [wjakob/instant-meshes](https://github.com/wjakob/instant-meshes) | 생성 메시 리토폴로지 | 포함된 Windows 실행 파일의 SHA256을 검사; 소스 커밋은 별도 기록되지 않음 |
+| [localai-org/kimodo.cpp](https://github.com/localai-org/kimodo.cpp) | Vulkan 기반 Kimodo SOMA30 모션 생성 | 고정 커밋 `5679ff19ba0a522c0b0516e9a9d402fe1af2c027`; Windows 경로 호환용 UTF-8 manifest 보정 |
+| [tdw46/mixamo_blender4-main](https://github.com/tdw46/mixamo_blender4-main) | Blender에서 Mixamo 컨트롤 리그 생성 | 애드온 1.2.2 소스 포함; 소스 커밋은 별도 기록되지 않음 |
+| [pypa/get-pip](https://github.com/pypa/get-pip) | 전용 Python 환경의 pip 초기 설치 | 고정 커밋 `f6f644156f23dfe9acc06e7b9ca75eee311f2e37` |
+
+[PixelArtistry-Watertight-Meshes](https://github.com/pixelartistry/PixelArtistry-Watertight-Meshes)는 초기 구성 참고 프로젝트입니다. 해당 설치 프로그램을 포함하거나 그대로 실행하지 않으며, 이 저장소의 별도 1024 형상·2048 투영 텍스처 플로우를 사용합니다.
+
+Blender와 Python은 공식 배포 파일을 사용합니다. Kimodo 리타게팅·SOMA30 손가락/발가락 보정 애드온은 이 저장소의 [addons/kimodo_rigify](addons/kimodo_rigify)에 있는 통합 코드입니다. 텍스처 투영 수정 코드는 [addons/comfyui-local-dual-resolution](addons/comfyui-local-dual-resolution)에 있으며 ComfyUI-Trellis2의 원저작권을 유지합니다.
+
+다운로드 버전·파일 SHA256은 [manifests/software.json](manifests/software.json), Python 패키지는 [manifests/requirements-3d.lock](manifests/requirements-3d.lock)에 기록합니다. 모델 가중치는 Git에 포함하지 않고 Hugging Face에서 다운로드하며, 저장소·고정 revision·SHA256은 [manifests/models.json](manifests/models.json)을 기준으로 합니다. 모델별 공급처와 라이선스는 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)에 정리했습니다.
+
 ## 검증과 라이선스
 
 `setup.bat`은 CUDA 연산, pip check, 네이티브 모듈, 모델·도구 경로, 격리된 Blender 애드온, SOMA30 리타게팅·발가락 보정과 Mixamo 컨트롤 리그 생성을 검사합니다. 전체 GPU 생성은 시간이 걸리므로 `run_generation_test.bat`으로 별도 실행합니다.
