@@ -15,7 +15,7 @@ spec.loader.exec_module(pipeline)
 
 
 class RetopologyTests(unittest.TestCase):
-    def check_failure(self,shape_rejected,timeout=False,repaired=False,budget=False):
+    def check_failure(self,shape_rejected,timeout=False,repaired=False,budget=False,unrelated_original=False):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp); case=root/'case'; output=case/'retopology'
             output.mkdir(parents=True); (case/'cleanup').mkdir()
@@ -29,7 +29,8 @@ class RetopologyTests(unittest.TestCase):
             def run(command,**kwargs):
                 calls.append(command)
                 if any(str(arg).endswith('prepare_retopology.py') for arg in command):
-                    (output/'retopo_input.obj').write_text('v 0 0 0\n'*1200)
+                    prepared=Path(command[command.index('--output')+1]);prepared.mkdir(exist_ok=True)
+                    (prepared/'retopo_input.obj').write_text('v 0 0 0\n'*1200)
                     return SimpleNamespace(returncode=0)
                 if '-o' in command:
                     if timeout: raise pipeline.subprocess.TimeoutExpired(command,120)
@@ -40,14 +41,20 @@ class RetopologyTests(unittest.TestCase):
                 if budget and command[command.index('--method')+1]=='instant_meshes':
                     kwargs['stdout'].write(b'ValueError: Final geometric vertex budget exceeded: 879\n')
                 if repaired and command[command.index('--method')+1]=='surface_fallback':
-                    kwargs['stdout'].write(b'ValueError: Final geometric vertex budget exceeded: 1658\n')
+                    if unrelated_original and str(case/'cleanup/geometry_for_retopology.obj') in command:
+                        kwargs['stdout'].write(b'RuntimeError: Missing texture material\n')
+                    else: kwargs['stdout'].write(b'ValueError: Final geometric vertex budget exceeded: 1658\n')
                 return SimpleNamespace(returncode=1)
             with patch.object(pipeline,'ROOT',root),patch.object(pipeline,'preflight_tools'),patch.object(pipeline.subprocess,'run',side_effect=run):
                 with self.assertRaises(RuntimeError) as error:
                     pipeline.run_retopology(case,'single')
-            self.assertEqual(len(calls),5 if repaired else 3 if shape_rejected or budget else 2)
+            self.assertEqual(len(calls),(5 if unrelated_original else 7) if repaired else 3 if shape_rejected or budget else 2)
             if repaired:
-                self.assertIn(str(case/'cleanup/geometry_for_retopology.obj'),calls[-1])
+                self.assertIn(str(case/'cleanup/geometry_for_retopology.obj'),calls[4])
+                if not unrelated_original:
+                    self.assertIn('--voxel-fraction',calls[-2])
+                    self.assertIn('0.006',calls[-2])
+                    self.assertIn(str(output/'coarse_volume/retopo_input.obj'),calls[-1])
             if timeout: self.assertIn('surface_fallback',calls[-1])
             if shape_rejected or budget:
                 self.assertIn('surface_fallback',calls[-1])
@@ -67,6 +74,9 @@ class RetopologyTests(unittest.TestCase):
 
     def test_voxel_budget_failure_retries_cleaned_original(self):
         self.check_failure(True,repaired=True)
+
+    def test_unrelated_original_error_does_not_trigger_coarse_repair(self):
+        self.check_failure(True,repaired=True,unrelated_original=True)
 
     def test_budget_failure_retries_even_without_voxel_repair(self):
         self.check_failure(False,budget=True)

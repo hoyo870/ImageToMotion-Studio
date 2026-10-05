@@ -5,8 +5,9 @@ import bpy, bmesh
 from mathutils import Vector
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 from retopo_bake import audit
-p=argparse.ArgumentParser(); p.add_argument('--source',required=True); p.add_argument('--output',required=True)
+p=argparse.ArgumentParser(); p.add_argument('--source',required=True); p.add_argument('--output',required=True); p.add_argument('--voxel-fraction',type=float,default=.002)
 a=p.parse_args(sys.argv[sys.argv.index('--')+1:])
+if not .001<=a.voxel_fraction<=.01: raise ValueError('voxel-fraction must be between .001 and .01')
 out=Path(a.output); out.mkdir(parents=True,exist_ok=True)
 bpy.ops.wm.read_factory_settings(use_empty=True)
 bpy.ops.import_scene.gltf(filepath=a.source)
@@ -19,7 +20,7 @@ for obj in objects:
     before=audit(obj)
     points=[v.co for v in obj.data.vertices]
     diagonal=(Vector(tuple(max(v[i] for v in points) for i in range(3)))-Vector(tuple(min(v[i] for v in points) for i in range(3)))).length
-    voxel=diagonal*.002
+    voxel=diagonal*a.voxel_fraction
     # GLB splits vertices at UV/normal seams; weld before volumetric repair.
     bm=bmesh.new(); bm.from_mesh(obj.data)
     bmesh.ops.remove_doubles(bm,verts=list(bm.verts),dist=diagonal*1e-6)

@@ -115,6 +115,28 @@ def run_retopology(directory,mode):
                     '--retopo',str(directory/'cleanup/geometry_for_retopology.obj'),
                     '--output',str(output),'--minimum',str(lower),'--maximum',str(upper),
                     '--method','surface_fallback'],stdout=log,stderr=subprocess.STDOUT,**flags)
+    coarse_volume_retry=None
+    if process.returncode and repair_needed:
+        reason=blender_failure(failure_log)
+        if 'Final geometric vertex budget exceeded' in reason or 'Shape preservation failed' in reason:
+            # Tiny loops/handles in generated double surfaces can prevent collapse
+            # from reaching the budget. Merge them on a separate volume copy;
+            # the original source and the same visible-shape gate are retained.
+            coarse=output/'coarse_volume'; coarse.mkdir(exist_ok=True)
+            failure_log=output/'blender_coarse_prepare.log'
+            with failure_log.open('wb') as log:
+                process=subprocess.run([str(blender),'--background','--factory-startup','--python-exit-code','1',
+                    '--python',str(ROOT/'prepare_retopology.py'),'--','--source',str(source),
+                    '--output',str(coarse),'--voxel-fraction','0.006'],stdout=log,stderr=subprocess.STDOUT,**flags)
+            if not process.returncode:
+                coarse_volume_retry={'reason':reason,'voxel_fraction':.006}
+                failure_log=output/'blender_coarse_surface.log'
+                with failure_log.open('wb') as log:
+                    process=subprocess.run([str(blender),'--background','--factory-startup','--python-exit-code','1',
+                        '--python',str(ROOT/'retopo_bake.py'),'--','--source',str(source),
+                        '--retopo',str(coarse/'retopo_input.obj'),'--output',str(output),
+                        '--minimum',str(lower),'--maximum',str(upper),'--method','surface_fallback'],
+                        stdout=log,stderr=subprocess.STDOUT,**flags)
     if process.returncode or not (output/'retopo_report.json').is_file():
         raise RuntimeError('후처리 실패: '+blender_failure(failure_log)+'; 원본 보존. 로그: '+str(failure_log))
     import trimesh
@@ -135,6 +157,10 @@ def run_retopology(directory,mode):
     report['instant_meshes_shape_rejection']=fallback
     report['instant_meshes_failure']=instant_failure
     report['original_surface_retry']=original_surface_retry
+    report['coarse_volume_retry']=coarse_volume_retry
+    if coarse_volume_retry:
+        report['method']='Blender coarse-volume surface fallback (triangle-dominant)'
+        report['coarse_volume_repair']=json.loads((output/'coarse_volume/input_repair.json').read_text(encoding='utf-8'))
     report['input_repair']=json.loads((output/'input_repair.json').read_text(encoding='utf-8')) if repair_needed else None
     (output/'retopo_report.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
     (output/'REVIEW.txt').write_text(

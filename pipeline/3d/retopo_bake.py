@@ -77,14 +77,21 @@ def main():
         # Dense voxel inputs may need a ratio below .001 to reach the budget.
         lo_ratio,hi_ratio=0.0,1.0
         goal=args.maximum-20 if args.method=='surface_fallback' else (args.minimum+args.maximum)//2
-        for _ in range(24):
-            modifier.ratio=(lo_ratio+hi_ratio)/2
-            bpy.context.view_layer.update()
-            evaluated=low.evaluated_get(bpy.context.evaluated_depsgraph_get())
-            count=len(evaluated.data.vertices)
-            if abs(count-goal)<25: break
-            if count>goal: hi_ratio=modifier.ratio
-            else: lo_ratio=modifier.ratio
+        # Probe the lowest ratio once. Defective topology can impose a floor
+        # above the budget; avoid repeating 24 expensive searches on that plateau.
+        modifier.ratio=0.0
+        bpy.context.view_layer.update()
+        floor_count=len(low.evaluated_get(bpy.context.evaluated_depsgraph_get()).data.vertices)
+        print('BUDGET_REDUCTION_FLOOR',floor_count,flush=True)
+        if floor_count<=args.maximum:
+            for _ in range(24):
+                modifier.ratio=(lo_ratio+hi_ratio)/2
+                bpy.context.view_layer.update()
+                evaluated=low.evaluated_get(bpy.context.evaluated_depsgraph_get())
+                count=len(evaluated.data.vertices)
+                if abs(count-goal)<25: break
+                if count>goal: hi_ratio=modifier.ratio
+                else: lo_ratio=modifier.ratio
         bpy.ops.object.modifier_apply(modifier=modifier.name)
         print('BUDGET_REDUCTION_END',len(low.data.vertices),flush=True)
         decimated=True
