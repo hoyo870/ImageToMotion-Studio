@@ -29,6 +29,7 @@ def main():
     parser.add_argument('--output',required=True)
     parser.add_argument('--minimum',type=int,required=True)
     parser.add_argument('--maximum',type=int,required=True)
+    parser.add_argument('--method',choices=['instant_meshes','surface_fallback'],default='instant_meshes')
     args=parser.parse_args(sys.argv[sys.argv.index('--')+1:])
     directory=Path(args.output); directory.mkdir(parents=True,exist_ok=True)
     bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -48,7 +49,7 @@ def main():
         modifier=low.modifiers.new('Budget reduction','DECIMATE')
         modifier.decimate_type='COLLAPSE'
         lo_ratio,hi_ratio=.001,1.0
-        goal=(args.minimum+args.maximum)//2
+        goal=args.maximum-20 if args.method=='surface_fallback' else (args.minimum+args.maximum)//2
         for _ in range(16):
             modifier.ratio=(lo_ratio+hi_ratio)/2
             bpy.context.view_layer.update()
@@ -68,6 +69,8 @@ def main():
     if loose: bmesh.ops.delete(bm,geom=loose,context='VERTS')
     bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces))
     bm.to_mesh(low.data); bm.free()
+    low.data.validate(verbose=True,clean_customdata=False)
+    low.data.update()
     geometry=audit(low)
     if not args.minimum<=geometry['vertices']<=args.maximum:
         raise ValueError('Final geometric vertex budget exceeded: '+str(geometry))
@@ -184,7 +187,8 @@ def main():
     bpy.ops.wm.save_as_mainfile(filepath=str(directory/'model_final.blend'))
     bpy.ops.export_scene.gltf(filepath=str(directory/'model_final.glb'),export_format='GLB',use_selection=True)
     report=dict(status='completed_review_required',geometry=geometry,deviation=deviation,
-                method='Instant Meshes quad-dominant + Blender collapse reduction' if decimated else 'Instant Meshes quad-dominant',
+                method=('Blender source-surface collapse fallback (triangle-dominant)' if args.method=='surface_fallback'
+                        else 'Instant Meshes quad-dominant + Blender collapse reduction' if decimated else 'Instant Meshes quad-dominant'),
                 extracted_vertices=extracted_vertices,
                 vertex_budget=[args.minimum,args.maximum],texture_size=2048,
                 bake=dict(device='CPU',type='EMIT',ray_distance=diagonal*.08,extrusion=diagonal*.015,margin=16),

@@ -34,7 +34,7 @@ def run_retopology(directory,mode):
     desired=(lower+upper)//2; request_count=desired*2
     output=directory/'retopology'; output.mkdir(exist_ok=True)
     source_hash=hashlib.sha256(source.read_bytes()).hexdigest()
-    attempts=[]; selected=None; started=time.monotonic()
+    attempts=[]; selected=None; instant_failure=None; started=time.monotonic()
     flags=dict(stdin=subprocess.DEVNULL,creationflags=subprocess.CREATE_NO_WINDOW,cwd=ROOT)
     cleanup_report=json.loads((directory/'cleanup/cleanup_report.json').read_text(encoding='utf-8'))
     repair_needed=any(item['after']['multi_face_edges' if 'multi_face_edges' in item['after'] else 'edges_with_more_than_two_faces'] for item in cleanup_report['objects'])
@@ -50,7 +50,13 @@ def run_retopology(directory,mode):
         command=[str(exe),str(geometry),'-o',str(candidate),'-v',str(request_count),
                  '-r','4','-p','4','-D','-b','-S','2','-t','1','-d']
         with (output/f'instant_meshes_{index+1}.log').open('wb') as log:
-            process=subprocess.run(command,stdout=log,stderr=subprocess.STDOUT,timeout=120,**flags)
+            try:
+                process=subprocess.run(command,stdout=log,stderr=subprocess.STDOUT,timeout=120,**flags)
+            except subprocess.TimeoutExpired:
+                instant_failure='Instant Meshes timed out after 120 seconds'
+                selected=geometry
+                attempts.append(dict(requested=request_count,error=instant_failure,command=command))
+                break
         if process.returncode or not candidate.is_file():
             raise RuntimeError('Instant Meshes failed; see '+str(output/f'instant_meshes_{index+1}.log'))
         count=obj_vertices(candidate)
@@ -65,11 +71,29 @@ def run_retopology(directory,mode):
         request_count=new_count
     (output/'attempts.json').write_text(json.dumps(attempts,indent=2),encoding='utf-8')
     if selected is None: raise RuntimeError('Vertex budget not reached in 6 attempts: '+str(attempts))
+    # Clear prior rejection markers before deciding whether this run needs fallback.
+    rejection=output/'shape_rejected.json'
+    rejection.unlink(missing_ok=True)
+    (output/'retopo_report.json').unlink(missing_ok=True)
     with (output/'blender_bake.log').open('wb') as log:
         process=subprocess.run([str(blender),'--background','--factory-startup','--python-exit-code','1',
             '--python',str(ROOT/'retopo_bake.py'),'--','--source',str(source),'--retopo',str(selected),
-            '--output',str(output),'--minimum',str(lower),'--maximum',str(upper)],
+            '--output',str(output),'--minimum',str(lower),'--maximum',str(upper),
+            '--method','surface_fallback' if instant_failure else 'instant_meshes'],
             stdout=log,stderr=subprocess.STDOUT,**flags)
+    fallback=None
+    if process.returncode and rejection.is_file() and not instant_failure:
+        fallback=json.loads(rejection.read_text(encoding='utf-8'))
+        # Instant Meshes can lose thin parts/components. Reduce its source surface
+        # directly (conditioned when needed), under the same shape gate.
+        with (output/'blender_surface_fallback.log').open('wb') as log:
+            process=subprocess.run([str(blender),'--background','--factory-startup','--python-exit-code','1',
+                '--python',str(ROOT/'retopo_bake.py'),'--','--source',str(source),
+                '--retopo',str(geometry),
+                '--output',str(output),'--minimum',str(lower),'--maximum',str(upper),
+                '--method','surface_fallback'],stdout=log,stderr=subprocess.STDOUT,**flags)
+        if process.returncode:
+            raise RuntimeError('Both retopology methods failed shape/bake validation; original preserved. See '+str(output/'blender_surface_fallback.log'))
     if process.returncode or not (output/'retopo_report.json').is_file():
         raise RuntimeError('Retopology bake failed; original preserved. See '+str(output/'blender_bake.log'))
     import trimesh
@@ -87,13 +111,15 @@ def run_retopology(directory,mode):
     report=json.loads((output/'retopo_report.json').read_text(encoding='utf-8'))
     report.update(mode=mode,exported_glb_vertices=exported,source_sha256=source_hash,
                   seconds=time.monotonic()-started,attempts=attempts)
+    report['instant_meshes_shape_rejection']=fallback
+    report['instant_meshes_failure']=instant_failure
     report['input_repair']=json.loads((output/'input_repair.json').read_text(encoding='utf-8')) if repair_needed else None
     (output/'retopo_report.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
     (output/'REVIEW.txt').write_text(
         '리토폴로지·2048 텍스처 재베이킹 완료 (수동 보수 검토 필요)\n'
         f'Blender 정점 {report["geometry"]["vertices"]}, 내보낸 GLB 정점 {exported}\n'
         'model_final.blend: LOW_Final은 최종 모델. HIGH_Source는 숨겨진 원본 참조.\n'
-        'Instant Meshes 사각형 중심 결과를 Collapse로 감소시켜 삼각형/사각형이 혼합됨.\n'
+        f'사용 방식: {report["method"]}\n'
         '관절 변형, 손가락, 옷의 개구부, 교차 면, 텍스처 이음새를 검토할 것.\n'
         '연결 결함이 있으면 형상 복사본에 Voxel 보수를 적용하며, 좁은 틈/개구부가 닫힐 수 있음.\n'
         '원본 고밀도 GLB는 변경하지 않음. 편집 후 토폴로지 변경 시 다시 UV/베이킹 필요.\n',encoding='utf-8')
