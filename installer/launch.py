@@ -32,7 +32,7 @@ def main():
     if not opts.arguments:
         print('Drag one image, or front/back/left/right images together onto generate_3d.bat.');return 1
     return subprocess.call([config['python'],str(Path(config['three'])/'drag_drop_3d.py')]+opts.arguments+extra,
-                           env={**os.environ,'PYTHONUTF8':'1','PYTHONIOENCODING':'utf-8'})
+                           env={**os.environ,'PYTHONUTF8':'1','PYTHONIOENCODING':'utf-8','IMT_CONFIG_PATH':str(p)})
 if __name__=='__main__':
     try:sys.exit(main())
     except Exception as error:print('ERROR:',error);sys.exit(1)

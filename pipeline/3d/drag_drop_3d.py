@@ -384,7 +384,7 @@ def main():
     parser.add_argument('--postprocess-only',type=Path)
     parser.add_argument('--postprocess-mode',choices=['single','multi'])
     args = parser.parse_args()
-    directory = None; prompt_id = None; lease = {}
+    directory = None; prompt_id = None; lease = {}; preview_directory = None
     try:
         from retopo_pipeline import run_retopology, preflight_tools
         if args.postprocess_only:
@@ -401,7 +401,7 @@ def main():
                 report=run_retopology(directory,args.postprocess_mode)
                 (directory/'validation.json').write_text(json.dumps(dict(cleanup=cleanup,retopology=report),indent=2),encoding='utf-8')
                 print(f'완료 (보수 검토 필요): {directory / "retopology/model_final.blend"}',flush=True)
-                if not args.no_open: os.startfile(directory)
+                preview_directory=directory
                 return 0
         mode, images = validate_inputs(args.images)
         if args.validate_only or os.environ.get('COMFY3D_VALIDATE_ONLY')=='1':
@@ -451,11 +451,7 @@ def main():
                 result_note.write(f'\n리토폴로지·2048 재베이킹 완료 (보수 검토 필요)\n최종: retopology/model_final.blend, model_final.glb\nBlender 정점: {final["geometry"]["vertices"]}\nGLB 정점: {final["exported_glb_vertices"]}\n검사: retopology/retopo_report.json\n')
                 result_note.write(f'\n입력 폴더에 복사: {audit["input_folder_copy"]["copied_to"]}\n')
             print(f'완료 (보수 검토 필요): {audit["input_folder_copy"]["copied_to"]}\n{note}',flush=True)
-            if not args.no_open and os.environ.get('COMFY3D_NO_OPEN')!='1':
-                try:
-                    os.startfile(directory)
-                except OSError:
-                    print(f'결과 폴더를 직접 열어주세요: {directory}',flush=True)
+            preview_directory=directory
             return 0
     except (Exception,KeyboardInterrupt) as error:
         cancel_owned_prompt(prompt_id)
@@ -466,6 +462,9 @@ def main():
         return 1
     finally:
         close_owned_server(lease,directory,prompt_id)
+        if preview_directory and not args.no_open and os.environ.get('COMFY3D_NO_OPEN')!='1':
+            from open_result import open_result
+            open_result(preview_directory)
 
 if __name__=='__main__':
     raise SystemExit(main())
