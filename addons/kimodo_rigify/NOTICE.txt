@@ -1,0 +1,12 @@
+Kimodo Local -> Rigify
+Copyright (c) 2026 Kimodo Local -> Rigify contributors.
+
+soma30.json contains SOMA skeleton names, parent indices and rest offsets
+derived from NVIDIA Kimodo skeleton definitions via kimodo.cpp.
+Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+Distributed under the Apache License, Version 2.0.
+Sources:
+https://github.com/nv-tlabs/kimodo
+https://github.com/localai-org/kimodo.cpp (demo/skeletons_extra.go)
+
+The addon does not include model weights or authentication credentials.

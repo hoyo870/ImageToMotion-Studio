@@ -1,0 +1,98 @@
+{
+  "comfyui": {
+    "url": "https://codeload.github.com/Comfy-Org/ComfyUI/zip/f1072eb0350638a3390ddb6afbcaa8c6b237c6fd",
+    "bytes": 13339027,
+    "sha256": "0674289dd5599fd458daa22a8bd20a752e83f85a52f013326c92285a17d6f57f",
+    "revision": "f1072eb0350638a3390ddb6afbcaa8c6b237c6fd"
+  },
+  "trellis-wrapper": {
+    "url": "https://codeload.github.com/visualbruno/ComfyUI-Trellis2/zip/b0e84c0f29857a444e8bcb5b9be2ea218e96efd0",
+    "bytes": 189986835,
+    "sha256": "104063a1f777133c4cc3ff4894f0afa9a851fdb89bee240905174dd053325b19",
+    "revision": "b0e84c0f29857a444e8bcb5b9be2ea218e96efd0"
+  },
+  "get-pip": {
+    "url": "https://raw.githubusercontent.com/pypa/get-pip/f6f644156f23dfe9acc06e7b9ca75eee311f2e37/public/get-pip.py",
+    "bytes": 2230488,
+    "sha256": "fb24e693bab954209a063d90953621412ccad4a500905a726286e038f508ddf6",
+    "revision": "f6f644156f23dfe9acc06e7b9ca75eee311f2e37"
+  },
+  "blender-post": {
+    "version": "4.5.9",
+    "url": "https://download.blender.org/release/Blender4.5/blender-4.5.9-windows-x64.zip",
+    "sha256": "41da973b9bf95bb312cbeff4d1982feb13259b43c821686b9bafea4dfe5477cf",
+    "bytes": 399051129
+  },
+  "blender-ui": {
+    "version": "5.2.2",
+    "url": "https://download.blender.org/release/Blender5.2/blender-5.2.2-windows-x64.zip",
+    "sha256": "3849d17a682cba006075aaa3f3597ecb5c9c30ec31035b2e092c53e40679b535",
+    "bytes": 404453484
+  },
+  "kimodo-runtime": {
+    "bytes": 19981644,
+    "sha256": "720b6a470fab00474ea31099d53abc4805488e4f1ace58653f3297855e6706ad",
+    "source": "https://github.com/localai-org/kimodo.cpp",
+    "revision": "5679ff19ba0a522c0b0516e9a9d402fe1af2c027",
+    "files": {
+      "build/release/kmd-generate.exe": {
+        "bytes": 333312,
+        "sha256": "9856b4a199086090f07fff0e0f11b49c5169e6e6c802d84526987947fdf06f7d"
+      },
+      "build/release/kmd-inspect.exe": {
+        "bytes": 310272,
+        "sha256": "413a157d90591e239c1aca16cb45d31578def896c479781d391cc6c9804abd46"
+      },
+      "build/release/bin/ggml-base.dll": {
+        "bytes": 1043390,
+        "sha256": "cb90bb89517430ce807dfd1b4040ffa98f2635e5108c978ee8d04c8701ee8820"
+      },
+      "build/release/bin/ggml-cpu.dll": {
+        "bytes": 1145546,
+        "sha256": "f0d2b9c2d24dfd6dac77096ca13c5954e5a804b0c20210fdb6dc90c0db960ec1"
+      },
+      "build/release/bin/ggml-vulkan.dll": {
+        "bytes": 56013112,
+        "sha256": "09bd0644ef6fc9a66bcb65dfdc4d1fed651362c59977308915bf13c5f63e9d5f"
+      },
+      "build/release/bin/ggml.dll": {
+        "bytes": 114762,
+        "sha256": "5dde790b9cad612688ccdeac6d580d49a69e48b005321fc5ccb4829181b46e14"
+      },
+      "build/release/bin/libdl.dll": {
+        "bytes": 21006,
+        "sha256": "7e8d06666ac3fc3a63ecd463c71fa9739e47fa9f8dda5a8ddb47a24824b3fe3c"
+      },
+      "build/release/bin/libgcc_s_seh-1.dll": {
+        "bytes": 938161,
+        "sha256": "c3f43525c72eca9dd86308580d547e752be849d2021e30dfae479e14f8cbf0a5"
+      },
+      "build/release/bin/libgomp-1.dll": {
+        "bytes": 340164,
+        "sha256": "7c498f8d15e532c2ac03c39714630467f37bc7df659d948035cf01e38ca8fa64"
+      },
+      "build/release/bin/libquadmath-0.dll": {
+        "bytes": 419280,
+        "sha256": "763f59435db9c5d8b05d527a5a8ddcb299702d454e27e5d335a2901594bebab7"
+      },
+      "build/release/bin/libstdc++-6.dll": {
+        "bytes": 2597845,
+        "sha256": "4d971d9877d1096384a9d1b822a718864f119d8b1e6f48ee3beae578fc9f1320"
+      },
+      "build/release/bin/libwinpthread-1.dll": {
+        "bytes": 72171,
+        "sha256": "e963ba8a0e965e2db225f9c7fcd328957456e937f6a4113e8b32eba98503a31c"
+      }
+    },
+    "modification": "UTF-8 process manifest embedded in CLI executables; resource-only patch"
+  },
+  "instant-meshes": {
+    "bytes": 3449856,
+    "sha256": "f1fe5b5f56d1002ae61dbd76a3fd646229fc1fe15322e7a3744f8ce442c76b2d",
+    "source": "https://github.com/wjakob/instant-meshes"
+  },
+  "python-jit-headers": {
+    "bytes": 437666,
+    "sha256": "145cde69c753dd5a78f4525ef1f5cbe0f2642678fdefd9e79e2bbea1a91d80ea"
+  }
+}

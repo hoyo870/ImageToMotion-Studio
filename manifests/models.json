@@ -1,0 +1,200 @@
+[
+  {
+    "component": "3d",
+    "destination": "visualbruno/TRELLIS.2-4B-FP8/pipeline_fp8.json",
+    "url": "https://huggingface.co/visualbruno/TRELLIS.2-4B-FP8/resolve/b867be02d3dd9a73f460b576f12d44e9bdd4a370/pipeline_fp8.json",
+    "bytes": 4207,
+    "sha256": "9bab718bdbb23618766068db673a4fc34c0c52e72e034213f6c75556001321e0",
+    "repo": "visualbruno/TRELLIS.2-4B-FP8",
+    "revision": "b867be02d3dd9a73f460b576f12d44e9bdd4a370"
+  },
+  {
+    "component": "3d",
+    "destination": "visualbruno/TRELLIS.2-4B-FP8/ckpts_fp8/shape_dec_next_dc_f16c32_fp8.json",
+    "url": "https://huggingface.co/visualbruno/TRELLIS.2-4B-FP8/resolve/b867be02d3dd9a73f460b576f12d44e9bdd4a370/ckpts_fp8/shape_dec_next_dc_f16c32_fp8.json",
+    "bytes": 677,
+    "sha256": "92c50da1ab2b648e939134b0edaae9d4508ba6da25c788af6e01dc26a84e74db",
+    "repo": "visualbruno/TRELLIS.2-4B-FP8",
+    "revision": "b867be02d3dd9a73f460b576f12d44e9bdd4a370"
+  },
+  {
+    "component": "3d",
+    "destination": "visualbruno/TRELLIS.2-4B-FP8/ckpts_fp8/tex_dec_next_dc_f16c32_fp8.json",
+    "url": "https://huggingface.co/visualbruno/TRELLIS.2-4B-FP8/resolve/b867be02d3dd9a73f460b576f12d44e9bdd4a370/ckpts_fp8/tex_dec_next_dc_f16c32_fp8.json",
+    "bytes": 704,
+    "sha256": "c45023bb2ce6c22fd65c793c66f2e09edd7cf53b15a6c121cf807e733841bb89",
+    "repo": "visualbruno/TRELLIS.2-4B-FP8",
+    "revision": "b867be02d3dd9a73f460b576f12d44e9bdd4a370"
+  },
+  {
+    "component": "3d",
+    "destination": "visualbruno/TRELLIS.2-4B-FP8/ckpts_fp8/tex_dec_next_dc_f16c32_fp8.safetensors",
+    "url": "https://huggingface.co/visualbruno/TRELLIS.2-4B-FP8/resolve/b867be02d3dd9a73f460b576f12d44e9bdd4a370/ckpts_fp8/tex_dec_next_dc_f16c32_fp8.safetensors",
+    "bytes": 474243926,
+    "sha256": "0f662e53871ca7dcba62f8742a8cf83a619123079a14b2587daf520706e59ba3",
+    "repo": "visualbruno/TRELLIS.2-4B-FP8",
+    "revision": "b867be02d3dd9a73f460b576f12d44e9bdd4a370"
+  },
+  {
+    "component": "3d",
+    "destination": "visualbruno/TRELLIS.2-4B-FP8/ckpts_fp8/ss_flow_img_dit_1_3B_64_fp8.json",
+    "url": "https://huggingface.co/visualbruno/TRELLIS.2-4B-FP8/resolve/b867be02d3dd9a73f460b576f12d44e9bdd4a370/ckpts_fp8/ss_flow_img_dit_1_3B_64_fp8.json",
+    "bytes": 472,
+    "sha256": "5c7da4b2629e1a0865970f2b07d1e947764233eb96b255681ffd40234fc87513",
+    "repo": "visualbruno/TRELLIS.2-4B-FP8",
+    "revision": "b867be02d3dd9a73f460b576f12d44e9bdd4a370"
+  },
+  {
+    "component": "3d",
+    "destination": "visualbruno/TRELLIS.2-4B-FP8/ckpts_fp8/ss_flow_img_dit_1_3B_64_fp8.safetensors",
+    "url": "https://huggingface.co/visualbruno/TRELLIS.2-4B-FP8/resolve/b867be02d3dd9a73f460b576f12d44e9bdd4a370/ckpts_fp8/ss_flow_img_dit_1_3B_64_fp8.safetensors",
+    "bytes": 1292248304,
+    "sha256": "4f3608e9e11ec1c5c44dd0eba9312de372b576efac0cb73b788f674b91fba0da",
+    "repo": "visualbruno/TRELLIS.2-4B-FP8",
+    "revision": "b867be02d3dd9a73f460b576f12d44e9bdd4a370"
+  },
+  {
+    "component": "3d",
+    "destination": "visualbruno/TRELLIS.2-4B-FP8/ckpts_fp8/slat_flow_img2shape_dit_1_3B_512_fp8.json",
+    "url": "https://huggingface.co/visualbruno/TRELLIS.2-4B-FP8/resolve/b867be02d3dd9a73f460b576f12d44e9bdd4a370/ckpts_fp8/slat_flow_img2shape_dit_1_3B_512_fp8.json",
+    "bytes": 463,
+    "sha256": "d64c99dfe50e0486da6aff361443c40e321781256337a901959ef5278a287fae",
+    "repo": "visualbruno/TRELLIS.2-4B-FP8",
+    "revision": "b867be02d3dd9a73f460b576f12d44e9bdd4a370"
+  },
+  {
+    "component": "3d",
+    "destination": "visualbruno/TRELLIS.2-4B-FP8/ckpts_fp8/slat_flow_img2shape_dit_1_3B_512_fp8.safetensors",
+    "url": "https://huggingface.co/visualbruno/TRELLIS.2-4B-FP8/resolve/b867be02d3dd9a73f460b576f12d44e9bdd4a370/ckpts_fp8/slat_flow_img2shape_dit_1_3B_512_fp8.safetensors",
+    "bytes": 1292322056,
+    "sha256": "b7e36a62039534cea42873c7366654941549df14879a971e5a73f618130f2aba",
+    "repo": "visualbruno/TRELLIS.2-4B-FP8",
+    "revision": "b867be02d3dd9a73f460b576f12d44e9bdd4a370"
+  },
+  {
+    "component": "3d",
+    "destination": "visualbruno/TRELLIS.2-4B-FP8/ckpts_fp8/slat_flow_img2shape_dit_1_3B_1024_fp8.json",
+    "url": "https://huggingface.co/visualbruno/TRELLIS.2-4B-FP8/resolve/b867be02d3dd9a73f460b576f12d44e9bdd4a370/ckpts_fp8/slat_flow_img2shape_dit_1_3B_1024_fp8.json",
+    "bytes": 463,
+    "sha256": "d1ecce7782a81f1f40ad5505ead5bfedeb753309112f103417624ab27d16f378",
+    "repo": "visualbruno/TRELLIS.2-4B-FP8",
+    "revision": "b867be02d3dd9a73f460b576f12d44e9bdd4a370"
+  },
+  {
+    "component": "3d",
+    "destination": "visualbruno/TRELLIS.2-4B-FP8/ckpts_fp8/slat_flow_img2shape_dit_1_3B_1024_fp8.safetensors",
+    "url": "https://huggingface.co/visualbruno/TRELLIS.2-4B-FP8/resolve/b867be02d3dd9a73f460b576f12d44e9bdd4a370/ckpts_fp8/slat_flow_img2shape_dit_1_3B_1024_fp8.safetensors",
+    "bytes": 1292322056,
+    "sha256": "b7f02263bda9c43614867dbea5e65da8947d575d93fc48942e81e020852034c1",
+    "repo": "visualbruno/TRELLIS.2-4B-FP8",
+    "revision": "b867be02d3dd9a73f460b576f12d44e9bdd4a370"
+  },
+  {
+    "component": "3d",
+    "destination": "visualbruno/TRELLIS.2-4B-FP8/ckpts_fp8/slat_flow_imgshape2tex_dit_1_3B_1024_fp8.json",
+    "url": "https://huggingface.co/visualbruno/TRELLIS.2-4B-FP8/resolve/b867be02d3dd9a73f460b576f12d44e9bdd4a370/ckpts_fp8/slat_flow_imgshape2tex_dit_1_3B_1024_fp8.json",
+    "bytes": 463,
+    "sha256": "25d2adcdd92bce095dfece3f8a8cae9c2352ff406541edb9a281cab4a7b02427",
+    "repo": "visualbruno/TRELLIS.2-4B-FP8",
+    "revision": "b867be02d3dd9a73f460b576f12d44e9bdd4a370"
+  },
+  {
+    "component": "3d",
+    "destination": "visualbruno/TRELLIS.2-4B-FP8/ckpts_fp8/slat_flow_imgshape2tex_dit_1_3B_1024_fp8.safetensors",
+    "url": "https://huggingface.co/visualbruno/TRELLIS.2-4B-FP8/resolve/b867be02d3dd9a73f460b576f12d44e9bdd4a370/ckpts_fp8/slat_flow_imgshape2tex_dit_1_3B_1024_fp8.safetensors",
+    "bytes": 1292371208,
+    "sha256": "456af26a07859cf1f21d9f9cd9585ac4e2242b2d46d164c3fd1d86101cbc7dd9",
+    "repo": "visualbruno/TRELLIS.2-4B-FP8",
+    "revision": "b867be02d3dd9a73f460b576f12d44e9bdd4a370"
+  },
+  {
+    "component": "3d",
+    "destination": "facebook/dinov3-vitl16-pretrain-lvd1689m/model.safetensors",
+    "url": "https://huggingface.co/visualbruno/dinov3-vitl16-pretrain-lvd1689m/resolve/8463e34549282813c2cbf67241b27c6fe8fa6321/model.safetensors",
+    "bytes": 1212559808,
+    "sha256": "dcb2e45127cccbf1601e5f42fef165eea275c8e5213197e8dcf3f48822718179",
+    "repo": "visualbruno/dinov3-vitl16-pretrain-lvd1689m",
+    "revision": "8463e34549282813c2cbf67241b27c6fe8fa6321"
+  },
+  {
+    "component": "3d",
+    "destination": "facebook/dinov3-vitl16-pretrain-lvd1689m/config.json",
+    "url": "https://huggingface.co/visualbruno/dinov3-vitl16-pretrain-lvd1689m/resolve/8463e34549282813c2cbf67241b27c6fe8fa6321/config.json",
+    "bytes": 745,
+    "sha256": "135ecd23e34a70b6fbed8b083fdecb319b7e3a54e3d849258bbe4ddcf1783bb5",
+    "repo": "visualbruno/dinov3-vitl16-pretrain-lvd1689m",
+    "revision": "8463e34549282813c2cbf67241b27c6fe8fa6321"
+  },
+  {
+    "component": "3d",
+    "destination": "facebook/dinov3-vitl16-pretrain-lvd1689m/preprocessor_config.json",
+    "url": "https://huggingface.co/visualbruno/dinov3-vitl16-pretrain-lvd1689m/resolve/8463e34549282813c2cbf67241b27c6fe8fa6321/preprocessor_config.json",
+    "bytes": 585,
+    "sha256": "960c41d1f3a7778b936365769a2d90550b318a6c0a53a0296957adacfe5e0dd7",
+    "repo": "visualbruno/dinov3-vitl16-pretrain-lvd1689m",
+    "revision": "8463e34549282813c2cbf67241b27c6fe8fa6321"
+  },
+  {
+    "component": "3d",
+    "destination": "microsoft/TRELLIS-image-large/ckpts/ss_dec_conv3d_16l8_fp16.json",
+    "url": "https://huggingface.co/microsoft/TRELLIS-image-large/resolve/25e0d31ffbebe4b5a97464dd851910efc3002d96/ckpts/ss_dec_conv3d_16l8_fp16.json",
+    "bytes": 245,
+    "sha256": "646781293f1cda74720de85d1cef50a957fb4aebd9a4bd014e454e32f2330ac5",
+    "repo": "microsoft/TRELLIS-image-large",
+    "revision": "25e0d31ffbebe4b5a97464dd851910efc3002d96"
+  },
+  {
+    "component": "3d",
+    "destination": "microsoft/TRELLIS-image-large/ckpts/ss_dec_conv3d_16l8_fp16.safetensors",
+    "url": "https://huggingface.co/microsoft/TRELLIS-image-large/resolve/25e0d31ffbebe4b5a97464dd851910efc3002d96/ckpts/ss_dec_conv3d_16l8_fp16.safetensors",
+    "bytes": 147591972,
+    "sha256": "1c76d4a40519aa2d711cc263a8404105231ac26db31d946bed48b84fee79009a",
+    "repo": "microsoft/TRELLIS-image-large",
+    "revision": "25e0d31ffbebe4b5a97464dd851910efc3002d96"
+  },
+  {
+    "component": "3d",
+    "destination": "vae/trellis_2_shape_vae_bf16.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/Pixal3D/resolve/f37641be376725d324c56626007cc477f1249a69/vae/trellis_2_shape_vae_bf16.safetensors",
+    "bytes": 1095844024,
+    "sha256": "de0cb4949a76c59ee5c091a995a69bcc8c51d5aeda939f0c641a50d2a72341f4",
+    "repo": "Comfy-Org/Pixal3D",
+    "revision": "f37641be376725d324c56626007cc477f1249a69"
+  },
+  {
+    "component": "3d",
+    "destination": "background_removal/birefnet.safetensors",
+    "url": "https://huggingface.co/Comfy-Org/BiRefNet/resolve/25511f8787e51912e1480706b4e47b8f467fbf72/background_removal/birefnet.safetensors",
+    "bytes": 444473596,
+    "sha256": "9ab37426bf4de0567af6b5d21b16151357149139362e6e8992021b8ce356a154",
+    "repo": "Comfy-Org/BiRefNet",
+    "revision": "25511f8787e51912e1480706b4e47b8f467fbf72"
+  },
+  {
+    "component": "kimodo",
+    "destination": "models/kimodo-soma-rp-v1.1-f32.gguf",
+    "url": "https://huggingface.co/LocalAI-io/Kimodo-SOMA-RP-v1.1-GGML/resolve/65f8b8ab34ee7524161cc87b20ae4cb4f5d3a12d/models/kimodo-soma-rp-v1.1-f32.gguf",
+    "bytes": 1133166784,
+    "sha256": "3bf1229f4c1eff1d28f5196a854113da2df9a11a5e21c60694630903bf948ee4",
+    "repo": "LocalAI-io/Kimodo-SOMA-RP-v1.1-GGML",
+    "revision": "65f8b8ab34ee7524161cc87b20ae4cb4f5d3a12d"
+  },
+  {
+    "component": "kimodo",
+    "destination": "Llama-3-Kimodo-Q8_0.gguf",
+    "url": "https://huggingface.co/LocalAI-io/Llama-3-Kimodo-GGML/resolve/3e8d958803beaddb6011ac534f2be972e2710c7d/Llama-3-Kimodo-Q8_0.gguf",
+    "bytes": 8142058752,
+    "sha256": "b26d0e74b115b33a7f2df5aca04426548365e99217cd590986f8abc4172e4c5c",
+    "repo": "LocalAI-io/Llama-3-Kimodo-GGML",
+    "revision": "3e8d958803beaddb6011ac534f2be972e2710c7d"
+  },
+  {
+    "component": "kimodo",
+    "destination": "tokenizer.gguf",
+    "url": "https://huggingface.co/LocalAI-io/Llama-3-Kimodo-GGML/resolve/3e8d958803beaddb6011ac534f2be972e2710c7d/tokenizer.gguf",
+    "bytes": 7295054,
+    "sha256": "81614aca62a98846c02b72cc2e5378e5bdce8b4d507b88f96eb1faa90dae607e",
+    "repo": "LocalAI-io/Llama-3-Kimodo-GGML",
+    "revision": "3e8d958803beaddb6011ac534f2be972e2710c7d"
+  }
+]

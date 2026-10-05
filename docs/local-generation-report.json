@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "actual_3d_generation": true,
+  "texture_resolution": 2048,
+  "cleanup_and_retopology": true,
+  "actual_cpp_motion_frames": 60,
+  "isolated_blender_retarget": true,
+  "soma30_correction": true,
+  "blender_mesh_vertices": 1252,
+  "mesh_boundary_edges": 8,
+  "mesh_review_required": true
+}

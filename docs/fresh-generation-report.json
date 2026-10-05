@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "actual_3d_generation": true,
+  "texture_resolution": 2048,
+  "cleanup_and_retopology": true,
+  "actual_cpp_motion_frames": 60,
+  "isolated_blender_retarget": true,
+  "soma30_correction": true,
+  "validation_mode": "same Windows PC, isolated fresh Python and Blender, Unicode and space path",
+  "models_reused_after_sha256": true,
+  "other_physical_pc_tested": false
+}

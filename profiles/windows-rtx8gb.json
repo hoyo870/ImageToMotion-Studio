@@ -1,0 +1,13 @@
+{
+  "os": "Windows x64",
+  "min_vram_gib": 8,
+  "cuda_compute_major": [7, 8, 9],
+  "python": "3.12.10",
+  "torch": "2.8.0+cu128",
+  "shape_resolution": 1024,
+  "projection_texture_resolution": 2048,
+  "single_vertices": [1000, 1500],
+  "multi_vertices": [2000, 3000],
+  "kimodo_backend": "CPP",
+  "kimodo_text_resident_limit_mib": 4000
+}

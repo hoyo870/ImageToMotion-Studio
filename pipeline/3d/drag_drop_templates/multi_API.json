@@ -1,0 +1,336 @@
+{
+  "prompt": {
+    "1": {
+      "class_type": "Trellis2LoadModel",
+      "inputs": {
+        "modelname": "visualbruno/TRELLIS.2-4B-FP8",
+        "backend": "sdpa",
+        "device": "cuda",
+        "low_vram": true,
+        "keep_models_loaded": false,
+        "conv_backend": "flex_gemm",
+        "sparse_backend": "xformers",
+        "use_reconviagen": false,
+        "pixal3d_multiview": false
+      }
+    },
+    "2": {
+      "class_type": "LoadBackgroundRemovalModel",
+      "inputs": {
+        "bg_removal_name": "birefnet.safetensors"
+      }
+    },
+    "10": {
+      "class_type": "LoadImage",
+      "inputs": {
+        "image": "nohair_front.png"
+      }
+    },
+    "11": {
+      "class_type": "RemoveBackground",
+      "inputs": {
+        "bg_removal_model": [
+          "2",
+          0
+        ],
+        "image": [
+          "10",
+          0
+        ]
+      }
+    },
+    "12": {
+      "class_type": "ImageCropToMask",
+      "inputs": {
+        "width": 1024,
+        "height": 1024,
+        "pad_factor": 1.1,
+        "grow_mask": 0,
+        "background": "#000000",
+        "images": [
+          "10",
+          0
+        ],
+        "masks": [
+          "11",
+          0
+        ]
+      }
+    },
+    "13": {
+      "class_type": "SaveImage",
+      "inputs": {
+        "filename_prefix": "nohair_test/multi/front_input",
+        "images": [
+          "12",
+          0
+        ]
+      }
+    },
+    "14": {
+      "class_type": "LoadImage",
+      "inputs": {
+        "image": "nohair_back.png"
+      }
+    },
+    "15": {
+      "class_type": "RemoveBackground",
+      "inputs": {
+        "bg_removal_model": [
+          "2",
+          0
+        ],
+        "image": [
+          "14",
+          0
+        ]
+      }
+    },
+    "16": {
+      "class_type": "ImageCropToMask",
+      "inputs": {
+        "width": 1024,
+        "height": 1024,
+        "pad_factor": 1.1,
+        "grow_mask": 0,
+        "background": "#000000",
+        "images": [
+          "14",
+          0
+        ],
+        "masks": [
+          "15",
+          0
+        ]
+      }
+    },
+    "17": {
+      "class_type": "SaveImage",
+      "inputs": {
+        "filename_prefix": "nohair_test/multi/back_input",
+        "images": [
+          "16",
+          0
+        ]
+      }
+    },
+    "18": {
+      "class_type": "LoadImage",
+      "inputs": {
+        "image": "nohair_left.png"
+      }
+    },
+    "19": {
+      "class_type": "RemoveBackground",
+      "inputs": {
+        "bg_removal_model": [
+          "2",
+          0
+        ],
+        "image": [
+          "18",
+          0
+        ]
+      }
+    },
+    "20": {
+      "class_type": "ImageCropToMask",
+      "inputs": {
+        "width": 1024,
+        "height": 1024,
+        "pad_factor": 1.1,
+        "grow_mask": 0,
+        "background": "#000000",
+        "images": [
+          "18",
+          0
+        ],
+        "masks": [
+          "19",
+          0
+        ]
+      }
+    },
+    "21": {
+      "class_type": "SaveImage",
+      "inputs": {
+        "filename_prefix": "nohair_test/multi/left_input",
+        "images": [
+          "20",
+          0
+        ]
+      }
+    },
+    "22": {
+      "class_type": "LoadImage",
+      "inputs": {
+        "image": "nohair_right.png"
+      }
+    },
+    "23": {
+      "class_type": "RemoveBackground",
+      "inputs": {
+        "bg_removal_model": [
+          "2",
+          0
+        ],
+        "image": [
+          "22",
+          0
+        ]
+      }
+    },
+    "24": {
+      "class_type": "ImageCropToMask",
+      "inputs": {
+        "width": 1024,
+        "height": 1024,
+        "pad_factor": 1.1,
+        "grow_mask": 0,
+        "background": "#000000",
+        "images": [
+          "22",
+          0
+        ],
+        "masks": [
+          "23",
+          0
+        ]
+      }
+    },
+    "25": {
+      "class_type": "SaveImage",
+      "inputs": {
+        "filename_prefix": "nohair_test/multi/right_input",
+        "images": [
+          "24",
+          0
+        ]
+      }
+    },
+    "30": {
+      "class_type": "Trellis2MeshWithVoxelMultiViewGenerator",
+      "inputs": {
+        "seed": 42,
+        "pipeline_type": "1024_cascade",
+        "sparse_structure_steps": 12,
+        "sparse_structure_guidance_strength": 7.5,
+        "sparse_structure_guidance_rescale": 0.7,
+        "sparse_structure_rescale_t": 5.0,
+        "shape_steps": 12,
+        "shape_guidance_strength": 7.5,
+        "shape_guidance_rescale": 0.5,
+        "shape_rescale_t": 3.0,
+        "texture_steps": 12,
+        "texture_guidance_strength": 1.0,
+        "texture_guidance_rescale": 0.0,
+        "texture_rescale_t": 3.0,
+        "max_num_tokens": 32768,
+        "sparse_structure_resolution": 32,
+        "generate_texture_slat": true,
+        "sparse_structure_guidance_interval_start": 0.3,
+        "sparse_structure_guidance_interval_end": 1.0,
+        "shape_guidance_interval_start": 0.3,
+        "shape_guidance_interval_end": 1.0,
+        "texture_guidance_interval_start": 0.6,
+        "texture_guidance_interval_end": 0.9,
+        "use_tiled_decoder": true,
+        "front_axis": "z",
+        "blend_temperature": 1.0,
+        "sampler": "euler",
+        "fill_holes": true,
+        "hole_iterations": 1,
+        "verbose": false,
+        "dino_lock": 0.0,
+        "dino_substeps": 4,
+        "hole_fill_algorithm": "flood_fill",
+        "dino_foundation_cap": 1.0,
+        "keep_only_shell": true,
+        "pipeline": [
+          "1",
+          0
+        ],
+        "front_image": [
+          "12",
+          0
+        ],
+        "back_image": [
+          "16",
+          0
+        ],
+        "left_image": [
+          "20",
+          0
+        ],
+        "right_image": [
+          "24",
+          0
+        ]
+      }
+    },
+    "40": {
+      "class_type": "Trellis2PostProcessAndUnWrapAndRasterizer",
+      "inputs": {
+        "mesh_cluster_threshold_cone_half_angle_rad": 60.0,
+        "mesh_cluster_refine_iterations": 0,
+        "mesh_cluster_global_iterations": 1,
+        "mesh_cluster_smooth_strength": 1,
+        "texture_size": 1024,
+        "remesh": true,
+        "remesh_band": 1.0,
+        "remesh_project": 0.0,
+        "target_face_num": 100000,
+        "simplify_method": "Cumesh",
+        "fill_holes": true,
+        "texture_alpha_mode": "OPAQUE",
+        "dual_contouring_resolution": "1024",
+        "double_side_material": false,
+        "remove_floaters": true,
+        "bake_on_vertices": false,
+        "use_custom_normals": false,
+        "remove_inner_faces": false,
+        "inpainting": "telea",
+        "reorient_vertices": "90 degrees",
+        "mesh": [
+          "30",
+          0
+        ],
+        "bvh": [
+          "30",
+          1
+        ]
+      }
+    },
+    "41": {
+      "class_type": "Trellis2ExportMesh",
+      "inputs": {
+        "filename_prefix": "nohair_test/multi/nohair_multi_textured",
+        "file_format": "glb",
+        "trimesh": [
+          "40",
+          0
+        ]
+      }
+    },
+    "42": {
+      "class_type": "SaveImage",
+      "inputs": {
+        "filename_prefix": "nohair_test/multi/base_color",
+        "images": [
+          "40",
+          1
+        ]
+      }
+    },
+    "43": {
+      "class_type": "SaveImage",
+      "inputs": {
+        "filename_prefix": "nohair_test/multi/metallic_roughness",
+        "images": [
+          "40",
+          2
+        ]
+      }
+    }
+  }
+}

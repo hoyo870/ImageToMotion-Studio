@@ -1,0 +1,16 @@
+* text=auto
+*.py text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.ps1 text eol=crlf
+*.manifest text eol=lf
+*.bat text eol=crlf
+*.zip binary
+*.exe binary
+*.blend binary
+*.fbx binary
+*.glb binary
+*.png binary
+*.mp4 binary
+vendor/licenses/** whitespace=-blank-at-eol,-blank-at-eof
+addons/mixamo_rig/README.md whitespace=-blank-at-eof
