@@ -85,6 +85,38 @@ Blender와 Python은 공식 배포 파일을 사용합니다. Kimodo 리타게�
 
 다운로드 버전·파일 SHA256은 [manifests/software.json](manifests/software.json), Python 패키지는 [manifests/requirements-3d.lock](manifests/requirements-3d.lock)에 기록합니다. 모델 가중치는 Git에 포함하지 않고 Hugging Face에서 다운로드하며, 저장소·고정 revision·SHA256은 [manifests/models.json](manifests/models.json)을 기준으로 합니다. 모델별 공급처와 라이선스는 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)에 정리했습니다.
 
+## 참고 영상과 관련 링크
+
+### 참고 영상·구성
+
+- [사용자가 공유한 YouTube 참고 영상](https://youtu.be/dmDrktqyT5o)
+- [PixelArtistry-Watertight-Meshes: GPU별 설정 안내](https://github.com/pixelartistry/PixelArtistry-Watertight-Meshes#settings-by-gpu)
+- [ComfyUI-Trellis2: 3D 생성 노드·설치 안내](https://github.com/visualbruno/ComfyUI-Trellis2)
+- [Instant Meshes: 리토폴로지 도구·사용 안내](https://github.com/wjakob/instant-meshes)
+
+위 영상과 PixelArtistry 프로젝트는 참고 자료입니다. 이 패키지의 설치 방법과 실제 동작은 이 README 및 고정 버전의 코드·검증 문서를 기준으로 확인하세요.
+
+### Blender·리깅·모션
+
+- [Blender 공식 다운로드](https://www.blender.org/download/)
+- [Mixamo: 캐릭터 오토 리깅·애니메이션 서비스](https://www.mixamo.com/)
+- [Blender Extensions의 Mixamo Rig 애드온](https://extensions.blender.org/add-ons/mixamo-rig/)
+- [kimodo.cpp: 로컬 모션 생성 엔진](https://github.com/localai-org/kimodo.cpp)
+
+Mixamo 서비스에서의 오토 리깅과 Blender의 Mixamo Rig 컨트롤 리그 생성은 별도 과정입니다. 이 패키지는 포함된 Mixamo Rig 1.2.2 소스를 사용하므로 Extensions 페이지의 최신 버전과 다를 수 있습니다.
+
+### 모델 공급처·모델 카드
+
+- [TRELLIS.2-4B FP8](https://huggingface.co/visualbruno/TRELLIS.2-4B-FP8)
+- [DINOv3 이미지 인코더](https://huggingface.co/visualbruno/dinov3-vitl16-pretrain-lvd1689m)
+- [Microsoft TRELLIS-image-large](https://huggingface.co/microsoft/TRELLIS-image-large)
+- [Comfy-Org Pixal3D](https://huggingface.co/Comfy-Org/Pixal3D)
+- [Comfy-Org BiRefNet](https://huggingface.co/Comfy-Org/BiRefNet)
+- [Kimodo SOMA RP v1.1 GGML](https://huggingface.co/LocalAI-io/Kimodo-SOMA-RP-v1.1-GGML)
+- [Llama-3 Kimodo GGML 텍스트 인코더](https://huggingface.co/LocalAI-io/Llama-3-Kimodo-GGML)
+
+각 모델 카드에서 사용 조건을 확인하세요. 실제 다운로드 파일은 위 저장소 전체가 아닌 [모델 manifest](manifests/models.json)에 지정된 파일입니다.
+
 ## 검증과 라이선스
 
 `setup.bat`은 CUDA 연산, pip check, 네이티브 모듈, 모델·도구 경로, 격리된 Blender 애드온, SOMA30 리타게팅·발가락 보정과 Mixamo 컨트롤 리그 생성을 검사합니다. 전체 GPU 생성은 시간이 걸리므로 `run_generation_test.bat`으로 별도 실행합니다.
