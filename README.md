@@ -132,7 +132,7 @@ Mixamo 서비스에서의 오토 리깅과 Blender의 Mixamo Rig 컨트롤 리�
 `setup.bat`은 루트 `.env.example`을 `.env`로 복사합니다. 기존 `.env`는 보존합니다. 설정을 바꾼 뒤 다음 `generate_3d.bat` 실행부터 적용됩니다. OS 환경 변수는 `.env`보다 우선합니다. 잘못된 값은 생성 전에 오류로 중단합니다. `.env`는 Git에 포함하지 않습니다.
 
 ```dotenv
-MODEL_PROFILE=TRELLIS2_FP8
+MODEL_PROFILE=TRELLIS2_GGUF
 GGUF_QUANT=Q4_K_M
 INPUT_RESOLUTION=1536
 SHAPE_RESOLUTION=1536
@@ -143,9 +143,9 @@ MULTI_VERTEX_MIN=2000
 MULTI_VERTEX_MAX=3000
 ```
 
-`MODEL_PROFILE`은 기존 `TRELLIS2_FP8`, `TRELLIS2_GGUF`, `PIXAL3D_GGUF` 중 선택합니다. GGUF 선택 시 실행 전 전용 노드와 해당 Q4_K_M 가중치를 준비합니다. 모델 버전·용량·SHA256은 `manifests/gguf-models.json`에 고정합니다. 원본 공유 Python과 모델 폴더를 변경하지 않고 `gguf_deps`, `gguf_models`에 설치합니다. 최초 기본 설치는 기존 FP8 환경도 준비합니다. 전체 재설치 없이 모델 전환이 가능합니다.
+기본 모델은 `TRELLIS2_GGUF`입니다. `MODEL_PROFILE`은 기존 `TRELLIS2_FP8`, `TRELLIS2_GGUF`, `PIXAL3D_GGUF` 중 선택합니다. GGUF 선택 시 실행 전 전용 노드와 해당 Q4_K_M 가중치를 준비합니다. 모델 버전·용량·SHA256은 `manifests/gguf-models.json`에 고정합니다. 원본 공유 Python과 모델 폴더를 변경하지 않고 `gguf_deps`, `gguf_models`에 설치합니다. 최초 기본 설치는 기존 FP8 환경도 준비합니다. 전체 재설치 없이 모델 전환이 가능합니다.
 
-`INPUT_RESOLUTION`은 1024 / 1536 / 2048이며 CPU에서 비율을 유지해 패딩·리사이징합니다. 원본을 덮어쓰지 않습니다. 큰 입력이 형상 생성 해상도를 자동으로 올리지는 않습니다. `SHAPE_RESOLUTION`은 요청 값이며 VRAM에 맞춰 낮춥니다. RTX 3070 Ti 8GB는 입력 1536·2048을 사용할 수 있지만 실제 형상은 1024로 제한합니다. 12GB 미만은 1024, 12GB 이상은 최대 1536을 적용하며 Pixal3D는 24GB 미만에서 1024로 제한합니다. 설치된 노드의 입력 규격에 맞춰 2048 형상 요청도 최대 1536입니다. 이 기준은 보수적인 정책이며 모든 이미지에서 메모리 부족이 없다는 보장은 아닙니다.
+`INPUT_RESOLUTION`은 1024 / 1536 / 2048이며 CPU에서 비율을 유지해 패딩·리사이징합니다. 원본을 덮어쓰지 않습니다. 큰 입력이 형상 생성 해상도를 자동으로 올리지는 않습니다. `SHAPE_RESOLUTION`은 요청 값이며 VRAM에 맞춰 낮춥니다. Trellis 2 GGUF는 RTX 3070 Ti 8GB의 실제 생성 테스트를 근거로 8GB 이상에서 형상 1536까지 허용합니다. 이 PC의 기존 `.env`는 입력·형상 1536과 Trellis 2 GGUF를 사용합니다. 신규 `.env`의 해상도 기본값은 1024이며 1536으로 변경할 수 있습니다. FP8 모델은 12GB 미만에서 1024, Pixal3D GGUF는 24GB 미만에서 1024로 제한합니다. 설치된 노드의 입력 규격에 맞춰 2048 형상 요청도 최대 1536입니다. 이 기준은 보수적인 정책이며 모든 이미지에서 메모리 부족이 없다는 보장은 아닙니다.
 
 정점 범위는 Blender 최종 메시의 기하 정점 기준입니다. GLB의 UV 경계 정점 수는 더 많을 수 있습니다. 설정은 작업 폴더 `settings.json`에 고정해 진행 중 `.env`를 바꿔도 해당 작업의 검증·복사 기준이 달라지지 않습니다. 정점 목표를 낮추면 형상 보존 검사를 통과하지 못할 수 있으며 검사를 끄지는 않습니다.
 

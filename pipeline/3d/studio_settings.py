@@ -3,7 +3,7 @@ from functools import lru_cache
 import json,os,subprocess
 from pathlib import Path
 
-DEFAULTS=dict(MODEL_PROFILE='TRELLIS2_FP8',GGUF_QUANT='Q4_K_M',
+DEFAULTS=dict(MODEL_PROFILE='TRELLIS2_GGUF',GGUF_QUANT='Q4_K_M',
     SINGLE_VERTEX_MIN='1000',SINGLE_VERTEX_MAX='1500',MULTI_VERTEX_MIN='2000',MULTI_VERTEX_MAX='3000',
     INPUT_RESOLUTION='1024',SHAPE_RESOLUTION='1024',TEXTURE_RESOLUTION='2048')
 
@@ -55,6 +55,7 @@ def effective_shape(cfg,vram_mb=None):
         query=subprocess.check_output(['nvidia-smi','--query-gpu=memory.total','--format=csv,noheader,nounits'],text=True)
         vram_mb=int(query.splitlines()[0].strip())
     cap=1024 if vram_mb<12000 else 1536 if vram_mb<24000 else 2048
+    if cfg['model_profile']=='TRELLIS2_GGUF' and vram_mb>=7680: cap=max(cap,1536)
     if cfg['model_profile']=='PIXAL3D_GGUF' and vram_mb<24000: cap=1024
     # Installed upstream nodes expose up to 1536; 2048 input remains supported.
     cap=min(cap,1536)

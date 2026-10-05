@@ -5,6 +5,10 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'pipeline/3d'))
 from studio_settings import load_settings,effective_shape,DEFAULTS
 
 class SettingsTests(unittest.TestCase):
+    def test_default_model(self):
+        with tempfile.TemporaryDirectory() as tmp,patch.dict(os.environ,{},clear=True):
+            self.assertEqual(load_settings(tmp)['model_profile'],'TRELLIS2_GGUF')
+
     def test_ranges_and_models(self):
         with tempfile.TemporaryDirectory() as tmp,patch.dict(os.environ,{},clear=True):
             root=Path(tmp)
@@ -26,8 +30,11 @@ class SettingsTests(unittest.TestCase):
     def test_process_override_and_vram_cap(self):
         with tempfile.TemporaryDirectory() as tmp,patch.dict(os.environ,{'MODEL_PROFILE':'TRELLIS2_GGUF','SHAPE_RESOLUTION':'2048'},clear=True):
             cfg=load_settings(tmp)
-            self.assertEqual(effective_shape(cfg,8192),1024)
+            self.assertEqual(effective_shape(cfg,8192),1536)
+            self.assertEqual(effective_shape(cfg,7168),1024)
             self.assertEqual(effective_shape(cfg,16384),1536)
+            cfg['model_profile']='TRELLIS2_FP8'
+            self.assertEqual(effective_shape(cfg,8192),1024)
 
 class PreparedInputTests(unittest.TestCase):
     def test_large_input_keeps_mapping_at_2048(self):
