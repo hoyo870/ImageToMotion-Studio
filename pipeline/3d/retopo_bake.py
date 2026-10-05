@@ -44,13 +44,21 @@ def main():
     low=bpy.context.view_layer.objects.active; low.name='LOW_Final'
     bpy.ops.object.transform_apply(location=False,rotation=True,scale=True)
     extracted_vertices=len(low.data.vertices)
+    if args.method=='surface_fallback':
+        # Preserve sharp features while removing nearly coplanar voxel tessellation
+        # before collapse. Thin double surfaces otherwise stall collapse reduction.
+        modifier=low.modifiers.new('Planar conditioning','DECIMATE')
+        modifier.decimate_type='DISSOLVE'; modifier.angle_limit=.017453292519943295
+        bpy.ops.object.modifier_apply(modifier=modifier.name)
+        low.data.validate(); low.data.update()
     decimated=False
-    if extracted_vertices>args.maximum:
+    if len(low.data.vertices)>args.maximum:
         modifier=low.modifiers.new('Budget reduction','DECIMATE')
         modifier.decimate_type='COLLAPSE'
-        lo_ratio,hi_ratio=.001,1.0
+        # Dense voxel inputs may need a ratio below .001 to reach the budget.
+        lo_ratio,hi_ratio=0.0,1.0
         goal=args.maximum-20 if args.method=='surface_fallback' else (args.minimum+args.maximum)//2
-        for _ in range(16):
+        for _ in range(24):
             modifier.ratio=(lo_ratio+hi_ratio)/2
             bpy.context.view_layer.update()
             evaluated=low.evaluated_get(bpy.context.evaluated_depsgraph_get())
@@ -72,6 +80,23 @@ def main():
     low.data.validate(verbose=True,clean_customdata=False)
     low.data.update()
     geometry=audit(low)
+    # Collapse can stall on duplicate/degenerate faces in thin generated meshes.
+    # Validation above removes these; retry on the repaired, much smaller surface.
+    for retry in range(3):
+        if geometry['vertices']<=args.maximum: break
+        modifier=low.modifiers.new('Post-validation budget reduction','DECIMATE')
+        modifier.decimate_type='COLLAPSE'
+        modifier.ratio=min(.9,((args.minimum+args.maximum)/2)/geometry['vertices'])
+        bpy.ops.object.modifier_apply(modifier=modifier.name)
+        low.data.validate(verbose=True,clean_customdata=False)
+        bm=bmesh.new(); bm.from_mesh(low.data)
+        bmesh.ops.dissolve_degenerate(bm,edges=list(bm.edges),dist=scale*1e-7)
+        loose=[v for v in bm.verts if not v.link_faces]
+        if loose: bmesh.ops.delete(bm,geom=loose,context='VERTS')
+        bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces))
+        bm.to_mesh(low.data); bm.free(); low.data.validate(); low.data.update()
+        geometry=audit(low)
+        decimated=True
     if not args.minimum<=geometry['vertices']<=args.maximum:
         raise ValueError('Final geometric vertex budget exceeded: '+str(geometry))
     # Quantify shape deviation without claiming animation-ready topology.

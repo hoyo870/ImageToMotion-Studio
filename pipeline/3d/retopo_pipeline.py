@@ -20,6 +20,13 @@ def obj_vertices(path):
         return sum(line.startswith('v ') for line in handle)
 
 
+def blender_failure(path):
+    lines=Path(path).read_text(encoding='utf-8',errors='replace').splitlines()
+    return next((line[:600] for line in reversed(lines)
+                 if line.startswith(('ValueError:','RuntimeError:','FileNotFoundError:','MemoryError:'))),
+                'Blender 실행 로그 확인 필요')
+
+
 def run_retopology(directory,mode):
     preflight_tools()
     directory=Path(directory)
@@ -81,7 +88,7 @@ def run_retopology(directory,mode):
             '--output',str(output),'--minimum',str(lower),'--maximum',str(upper),
             '--method','surface_fallback' if instant_failure else 'instant_meshes'],
             stdout=log,stderr=subprocess.STDOUT,**flags)
-    fallback=None
+    fallback=None; original_surface_retry=None
     if process.returncode and rejection.is_file() and not instant_failure:
         fallback=json.loads(rejection.read_text(encoding='utf-8'))
         # Instant Meshes can lose thin parts/components. Reduce its source surface
@@ -92,10 +99,20 @@ def run_retopology(directory,mode):
                 '--retopo',str(geometry),
                 '--output',str(output),'--minimum',str(lower),'--maximum',str(upper),
                 '--method','surface_fallback'],stdout=log,stderr=subprocess.STDOUT,**flags)
-        if process.returncode:
-            raise RuntimeError('Both retopology methods failed shape/bake validation; original preserved. See '+str(output/'blender_surface_fallback.log'))
+    failure_log=output/'blender_surface_fallback.log' if fallback else output/'blender_bake.log'
+    if process.returncode and repair_needed:
+        reason=blender_failure(failure_log)
+        if 'Final geometric vertex budget exceeded' in reason or 'Shape preservation failed' in reason:
+            original_surface_retry=reason
+            failure_log=output/'blender_original_surface.log'
+            with failure_log.open('wb') as log:
+                process=subprocess.run([str(blender),'--background','--factory-startup','--python-exit-code','1',
+                    '--python',str(ROOT/'retopo_bake.py'),'--','--source',str(source),
+                    '--retopo',str(directory/'cleanup/geometry_for_retopology.obj'),
+                    '--output',str(output),'--minimum',str(lower),'--maximum',str(upper),
+                    '--method','surface_fallback'],stdout=log,stderr=subprocess.STDOUT,**flags)
     if process.returncode or not (output/'retopo_report.json').is_file():
-        raise RuntimeError('Retopology bake failed; original preserved. See '+str(output/'blender_bake.log'))
+        raise RuntimeError('후처리 실패: '+blender_failure(failure_log)+'; 원본 보존. 로그: '+str(failure_log))
     import trimesh
     import numpy as np
     scene=trimesh.load(output/'model_final.glb',force='scene',process=False)
@@ -113,11 +130,13 @@ def run_retopology(directory,mode):
                   seconds=time.monotonic()-started,attempts=attempts)
     report['instant_meshes_shape_rejection']=fallback
     report['instant_meshes_failure']=instant_failure
+    report['original_surface_retry']=original_surface_retry
     report['input_repair']=json.loads((output/'input_repair.json').read_text(encoding='utf-8')) if repair_needed else None
     (output/'retopo_report.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
     (output/'REVIEW.txt').write_text(
         '리토폴로지·2048 텍스처 재베이킹 완료 (수동 보수 검토 필요)\n'
         f'Blender 정점 {report["geometry"]["vertices"]}, 내보낸 GLB 정점 {exported}\n'
+        f'보수 검토: 경계 에지 {report["geometry"]["boundary_edges"]}, 비정상 연결 에지 {report["geometry"]["multi_face_edges"]}\n'
         'model_final.blend: LOW_Final은 최종 모델. HIGH_Source는 숨겨진 원본 참조.\n'
         f'사용 방식: {report["method"]}\n'
         '관절 변형, 손가락, 옷의 개구부, 교차 면, 텍스처 이음새를 검토할 것.\n'
