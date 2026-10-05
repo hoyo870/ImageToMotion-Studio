@@ -22,6 +22,24 @@ def audit(obj):
     return report
 
 
+def supplement_vertices(obj,minimum,maximum):
+    bm=bmesh.new(); bm.from_mesh(obj.data)
+    original_count=len(bm.verts)
+    for _ in range(32):
+        needed=minimum-len(bm.verts)
+        if needed<=0: break
+        edges=sorted(bm.edges,key=lambda e:e.calc_length(),reverse=True)
+        if not edges: break
+        bmesh.ops.subdivide_edges(bm,edges=edges[:max(1,needed//3)],cuts=1,
+                                 use_grid_fill=False,smooth=0.0)
+    added=len(bm.verts)-original_count
+    bm.to_mesh(obj.data); bm.free(); obj.data.validate(); obj.data.update()
+    geometry=audit(obj)
+    if not minimum<=geometry['vertices']<=maximum:
+        raise ValueError('Final geometric vertex budget exceeded after validation: '+str(geometry))
+    return added,geometry
+
+
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--source',required=True)
@@ -44,7 +62,7 @@ def main():
     low=bpy.context.view_layer.objects.active; low.name='LOW_Final'
     bpy.ops.object.transform_apply(location=False,rotation=True,scale=True)
     extracted_vertices=len(low.data.vertices)
-    if args.method=='surface_fallback':
+    if args.method=='surface_fallback' and Path(args.retopo).name=='retopo_input.obj':
         # Preserve sharp features while removing nearly coplanar voxel tessellation
         # before collapse. Thin double surfaces otherwise stall collapse reduction.
         modifier=low.modifiers.new('Planar conditioning','DECIMATE')
@@ -53,6 +71,7 @@ def main():
         low.data.validate(); low.data.update()
     decimated=False
     if len(low.data.vertices)>args.maximum:
+        print('BUDGET_REDUCTION_START',len(low.data.vertices),flush=True)
         modifier=low.modifiers.new('Budget reduction','DECIMATE')
         modifier.decimate_type='COLLAPSE'
         # Dense voxel inputs may need a ratio below .001 to reach the budget.
@@ -67,6 +86,7 @@ def main():
             if count>goal: hi_ratio=modifier.ratio
             else: lo_ratio=modifier.ratio
         bpy.ops.object.modifier_apply(modifier=modifier.name)
+        print('BUDGET_REDUCTION_END',len(low.data.vertices),flush=True)
         decimated=True
     bm=bmesh.new(); bm.from_mesh(low.data)
     coordinates=[v.co for v in bm.verts]
@@ -97,7 +117,7 @@ def main():
         bm.to_mesh(low.data); bm.free(); low.data.validate(); low.data.update()
         geometry=audit(low)
         decimated=True
-    if not args.minimum<=geometry['vertices']<=args.maximum:
+    if geometry['vertices']>args.maximum or geometry['vertices']==0 or geometry['faces']==0:
         raise ValueError('Final geometric vertex budget exceeded: '+str(geometry))
     # Quantify shape deviation without claiming animation-ready topology.
     positions=[o.matrix_world@v.co for o in high for v in o.data.vertices]
@@ -146,6 +166,13 @@ def main():
     if deviation['visible_source_to_low_p95_relative']>.015 or deviation['visible_source_to_low_max_relative']>.05:
         (directory/'shape_rejected.json').write_text(json.dumps(deviation,indent=2),encoding='utf-8')
         raise ValueError('Shape preservation failed: '+str(deviation))
+    # A valid simple surface may need fewer vertices than the requested minimum.
+    # Split existing edges after shape validation; no displacement/smoothing.
+    budget_subdivision_vertices=0
+    if geometry['vertices']<args.minimum:
+        budget_subdivision_vertices,geometry=supplement_vertices(low,args.minimum,args.maximum)
+    if not args.minimum<=geometry['vertices']<=args.maximum:
+        raise ValueError('Final geometric vertex budget exceeded after validation: '+str(geometry))
     bpy.ops.object.mode_set(mode='EDIT'); bpy.ops.mesh.select_all(action='SELECT')
     bpy.ops.uv.smart_project(angle_limit=1.151917,island_margin=.015)
     bpy.ops.object.mode_set(mode='OBJECT')
@@ -215,6 +242,7 @@ def main():
                 method=('Blender source-surface collapse fallback (triangle-dominant)' if args.method=='surface_fallback'
                         else 'Instant Meshes quad-dominant + Blender collapse reduction' if decimated else 'Instant Meshes quad-dominant'),
                 extracted_vertices=extracted_vertices,
+                budget_subdivision_vertices=budget_subdivision_vertices,
                 vertex_budget=[args.minimum,args.maximum],texture_size=2048,
                 bake=dict(device='CPU',type='EMIT',ray_distance=diagonal*.08,extrusion=diagonal*.015,margin=16),
                 limitations=['Joint edge flow/animation deformation needs manual review',

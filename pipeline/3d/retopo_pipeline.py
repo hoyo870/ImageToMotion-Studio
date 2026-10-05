@@ -89,8 +89,9 @@ def run_retopology(directory,mode):
             '--method','surface_fallback' if instant_failure else 'instant_meshes'],
             stdout=log,stderr=subprocess.STDOUT,**flags)
     fallback=None; original_surface_retry=None
-    if process.returncode and rejection.is_file() and not instant_failure:
-        fallback=json.loads(rejection.read_text(encoding='utf-8'))
+    initial_reason=blender_failure(output/'blender_bake.log') if process.returncode else None
+    if process.returncode and not instant_failure and (rejection.is_file() or 'Final geometric vertex budget exceeded' in initial_reason):
+        fallback=json.loads(rejection.read_text(encoding='utf-8')) if rejection.is_file() else {'reason':initial_reason}
         # Instant Meshes can lose thin parts/components. Reduce its source surface
         # directly (conditioned when needed), under the same shape gate.
         with (output/'blender_surface_fallback.log').open('wb') as log:
