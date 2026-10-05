@@ -20,6 +20,7 @@ from datetime import datetime, timezone, timedelta
 
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0,str(ROOT))  # Embedded Python does not add the script directory.
+from studio_settings import settings,vertex_budget,effective_shape
 BASE = 'http://127.0.0.1:8189'
 VIEWS = ('front', 'back', 'left', 'right')
 EXTENSIONS = {'.png', '.jpg', '.jpeg', '.webp', '.bmp', '.tif', '.tiff'}
@@ -69,6 +70,14 @@ def request(path, data=None, timeout=8):
         raise RuntimeError(f'ComfyUI HTTP {error.code}: {error.read().decode("utf-8", errors="replace")}') from error
 
 def preflight_models():
+    if settings()['model_profile']!='TRELLIS2_FP8':
+        manifest=Path(os.environ['IMT_CONFIG_PATH']).resolve().parents[1]/'manifests/gguf-models.json'
+        selected=json.loads(manifest.read_text(encoding='utf-8'))[settings()['model_profile']]
+        for item in selected['files']:
+            path=ROOT/'gguf_models'/selected['directory']/item['destination']
+            if not path.is_file() or path.stat().st_size!=item['bytes']:
+                raise FileNotFoundError('선택한 GGUF 모델이 준비되지 않았습니다. setup.bat을 실행하세요: '+str(path))
+        return
     models = ROOT / 'ComfyUI/models'
     repo = models / 'visualbruno/TRELLIS.2-4B-FP8'
     config = repo / 'pipeline_fp8.json'
@@ -128,6 +137,8 @@ def ensure_server(lease=None):
                     raise RuntimeError(f'3D ComfyUI 시작 시간 초과. 로그 확인: {ROOT / "logs/server.stderr.log"}')
                 time.sleep(2)
     needed = ('Trellis2LoadModel','Trellis2MeshWithVoxelGenerator','Trellis2MeshWithVoxelMultiViewGenerator','Trellis2PostProcessAndUnWrapAndRasterizer','Trellis2ExportMesh','RemoveBackground','ImageCropToMask','LocalMappingCropRGBA','LocalSourceProjection2048')
+    if settings()['model_profile']!='TRELLIS2_FP8':
+        needed += ('Trellis2LoadModel_GGUF','Trellis2MeshWithVoxelGenerator_GGUF','Trellis2MeshWithVoxelMultiViewGenerator_GGUF','Trellis2ExportMesh_GGUF')
     missing = [name for name in needed if name not in info]
     if missing:
         raise RuntimeError('8189 서버에 필요한 3D 노드가 없습니다: '+', '.join(missing))
@@ -143,11 +154,22 @@ def ensure_server(lease=None):
 
 def build_graph(mode, filenames, prefix):
     graph = json.loads((ROOT/'drag_drop_templates'/f'{mode}_API.json').read_text(encoding='utf-8'))['prompt']
+    cfg=settings(); shape=effective_shape(cfg)
+    graph['30']['inputs']['pipeline_type']=str(shape)+'_cascade'
+    if cfg['model_profile']!='TRELLIS2_FP8':
+        graph['1']={'class_type':'Trellis2LoadModel_GGUF','inputs':dict(
+            modelname='TRELLIS.2-4B' if cfg['model_profile']=='TRELLIS2_GGUF' else 'Pixal3D-GGUF',
+            model_format='GGUF '+cfg['quant'],backend='sdpa',device='cuda',low_vram=True,keep_models_loaded=False)}
+        for key in ('30','40'): graph[key]['class_type']+='_GGUF'
+        for key in ('fill_holes','hole_iterations','hole_fill_algorithm','keep_only_shell'):
+            graph['30']['inputs'].pop(key,None)
+        if mode=='multi': graph['30']['inputs']['blend_temperature']=1.0
     for index, view in enumerate(VIEWS if mode == 'multi' else ('front',)):
         node_id = 10 + index*4
+        graph[str(node_id+2)]['inputs'].update(width=cfg['input_resolution'],height=cfg['input_resolution'])
         graph[str(node_id)]['inputs']['image'] = filenames[view]
         mapping_id = str(60+index*2)
-        graph[mapping_id] = {'class_type':'LoadImage','inputs':{'image':filenames[view].replace('_1024.png','_2048.png')}}
+        graph[mapping_id] = {'class_type':'LoadImage','inputs':{'image':filenames[view].replace('_shape.png','_2048.png').replace('_1024.png','_2048.png')}}
         graph[str(61+index*2)] = {'class_type':'LocalMappingCropRGBA','inputs':{'image':[mapping_id,0],'mask':[str(node_id+1),0]}}
         graph[str(node_id+3)]['inputs']['filename_prefix'] = prefix+'/'+view+'_input'
     graph['50'] = {'class_type':'LocalSourceProjection2048','inputs':{'trimesh':['40',0],**{view+'_image':[str(61+i*2),0] for i,view in enumerate(VIEWS if mode=='multi' else ('front',))}}}
@@ -161,6 +183,14 @@ def build_graph(mode, filenames, prefix):
 def check_graph(graph, info):
     for key, node in graph.items():
         schema = info[node['class_type']]['input']
+        if node['class_type'].endswith('_GGUF'):
+            allowed=set(schema.get('required',{}))|set(schema.get('optional',{}))
+            node['inputs']={k:v for k,v in node['inputs'].items() if k in allowed}
+            for name,spec in schema.get('required',{}).items():
+                if name in node['inputs']: continue
+                opts=spec[1] if len(spec)>1 else {}
+                if 'default' in opts: node['inputs'][name]=opts['default']
+                elif isinstance(spec[0],list): node['inputs'][name]=spec[0][0]
         missing = set(schema.get('required',{}))-set(node['inputs'])
         if missing:
             raise RuntimeError(f'워크플로 필수 입력 누락: {key} {sorted(missing)}')
@@ -231,16 +261,19 @@ def prepare_inputs(source, target):
     with Image.open(source) as original:
         original=ImageOps.exif_transpose(original).convert('RGB'); size=original.size
         outputs={}
-        for resolution in (1024,2048):
+        for resolution in sorted({1024,settings()['input_resolution'],2048}):
             image=ImageOps.pad(original,(resolution,resolution),method=Image.Resampling.LANCZOS,color=(0,0,0))
-            destination=target.with_name(target.name.replace('_1024.png',f'_{resolution}.png'))
+            destination=target.with_name(target.name.replace('_shape.png',f'_{resolution}.png').replace('_1024.png',f'_{resolution}.png'))
             image.save(destination)
             outputs[str(resolution)]=str(destination)
+        selected=Path(outputs[str(settings()['input_resolution'])])
+        if selected!=target: shutil.copy2(selected,target)
+        outputs['shape_input']=str(target)
     hashes={}
     for key,name in outputs.items():
         with Path(name).open('rb') as handle: hashes[key]=hashlib.file_digest(handle,'sha256').hexdigest()
     with Path(source).open('rb') as handle: source_hash=hashlib.file_digest(handle,'sha256').hexdigest()
-    return dict(source_size=list(size),source_sha256=source_hash,method='Lanczos, aspect-preserving padding; not AI detail synthesis',outputs=outputs,sha256=hashes)
+    return dict(source_size=list(size),source_sha256=source_hash,input_resolution=settings()['input_resolution'],method='Lanczos, aspect-preserving padding; not AI detail synthesis',outputs=outputs,sha256=hashes)
 
 def close_owned_server(lease, directory=None, prompt_id=None):
     pid=lease.get('pid')
@@ -332,7 +365,7 @@ def copy_final_to_inputs(directory, mode, images, report):
     """Publish validated final only; exclusive create prevents overwriting/races."""
     if report.get('status') != 'completed_review_required' or report.get('mode') != mode:
         raise ValueError('검증 완료된 최종 결과만 입력 폴더로 복사할 수 있습니다.')
-    minimum, maximum = (1000,1500) if mode == 'single' else (2000,3000)
+    minimum, maximum = vertex_budget(mode,directory)
     if not minimum <= report['geometry']['vertices'] <= maximum:
         raise ValueError('최종 버텍스 검사 미통과: 복사하지 않습니다.')
     paths = list(images.values())
@@ -386,6 +419,7 @@ def main():
     args = parser.parse_args()
     directory = None; prompt_id = None; lease = {}; preview_directory = None
     try:
+        cfg=settings()
         from retopo_pipeline import run_retopology, preflight_tools
         if args.postprocess_only:
             if not args.postprocess_mode:
@@ -414,12 +448,13 @@ def main():
             stamp = datetime.now(timezone(timedelta(hours=9))).strftime('%Y%m%d_%H%M%S')
             run_id = f'{stamp}_{mode}_{uuid.uuid4().hex[:8]}'
             prefix = 'drag_drop/'+run_id
-            filenames = {view:prefix+'/'+view+'_1024.png' for view,path in images.items()}
+            filenames = {view:prefix+'/'+view+'_shape.png' for view,path in images.items()}
             graph = build_graph(mode,filenames,prefix); check_graph(graph,info)
             if args.dry_run or os.environ.get('COMFY3D_DRY_RUN')=='1':
                 print(json.dumps(dict(valid=True,mode=mode,graph_checked=True,nodes=len(graph),queued=False),ensure_ascii=False)); return 0
             directory = ROOT/'results/drag_drop'/run_id
             directory.mkdir(parents=True)
+            (directory/'settings.json').write_text(json.dumps({**cfg,'effective_shape_resolution':effective_shape(cfg)},indent=2),encoding='utf-8')
             input_dir = ROOT/'ComfyUI/input'/prefix; input_dir.mkdir(parents=True)
             manifest=[]
             for view,path in images.items():
@@ -433,7 +468,7 @@ def main():
             submitted = request('/prompt', {'prompt':graph,'client_id':'drag-drop-'+run_id})
             prompt_id = submitted['prompt_id']
             (directory/'submission.json').write_text(json.dumps(submitted,indent=2),encoding='utf-8')
-            print(f'생성 시작: {"싱글뷰" if mode=="single" else "멀티뷰 4방향"} / 형상 1024 / 투영 텍스처 2048. 입력 복잡도에 따라 수십 분 걸릴 수 있습니다.\n결과 폴더: {directory}',flush=True)
+            print(f'생성 시작: {"싱글뷰" if mode=="single" else "멀티뷰 4방향"} / {cfg["model_profile"]} / 입력 {cfg["input_resolution"]} / 형상 {effective_shape(cfg)} (요청 {cfg["shape_resolution"]}) / 투영 텍스처 2048.\n결과 폴더: {directory}',flush=True)
             history = wait_for_history(prompt_id,lease,directory)
             audit = export_result(history,directory)
             audit['cleanup'] = run_mesh_cleanup(directory)
@@ -444,7 +479,7 @@ def main():
             audit['input_folder_copy'] = copy_final_to_inputs(directory,mode,images,audit['retopology'])
             (directory/'validation.json').write_text(json.dumps(audit,indent=2),encoding='utf-8')
             note = '수밀 검사 통과' if all(mesh['watertight'] for mesh in audit['meshes']) else '수밀 검사 미통과: 메시 연결·구멍은 추가 정리가 필요합니다.'
-            (directory/'RESULT.txt').write_text(f'3D 1024 생성 및 원본 투영 2048 텍스처 매핑 완료\n방식: {mode}\n실행 시간: {audit["execution_seconds"]:.1f}초\n{note}\n\nmodel_textured.glb: UV와 텍스처 내장\nbase_color_2048.png: 색상 맵\nmetallic_roughness_2048.png: Metallic/Roughness 맵\nworkflow_API.json: 재현용 설정\n',encoding='utf-8')
+            (directory/'RESULT.txt').write_text(f'3D {cfg["effective_shape_resolution"] if "effective_shape_resolution" in cfg else effective_shape(cfg)} 생성 및 원본 투영 2048 텍스처 매핑 완료\n방식: {mode}\n실행 시간: {audit["execution_seconds"]:.1f}초\n{note}\n\nmodel_textured.glb: UV와 텍스처 내장\nbase_color_2048.png: 색상 맵\nmetallic_roughness_2048.png: Metallic/Roughness 맵\nworkflow_API.json: 재현용 설정\n',encoding='utf-8')
             with (directory/'RESULT.txt').open('a',encoding='utf-8') as result_note:
                 result_note.write('\n자동 메시 정리 완료: cleanup/model_cleaned.blend 및 model_cleaned.glb\n정리 전후 결함 기록: cleanup/cleanup_report.json\n큰 구멍·교차 면 등은 추가 보수 필요: cleanup/REVIEW.txt\n')
                 final=audit['retopology']

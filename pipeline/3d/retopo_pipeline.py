@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import subprocess
 import time
+from studio_settings import vertex_budget,settings
 
 ROOT=Path(__file__).resolve().parent
 
@@ -30,6 +31,8 @@ def blender_failure(path):
 def run_retopology(directory,mode):
     preflight_tools()
     directory=Path(directory)
+    if not (directory/'settings.json').is_file():
+        (directory/'settings.json').write_text(json.dumps(settings(),indent=2),encoding='utf-8')
     exe=ROOT/'tools/InstantMeshes/Instant Meshes.exe'
     blender=ROOT/'Blender/blender-4.5.9-windows-x64/blender.exe'
     source=directory/'model_textured.glb'
@@ -37,7 +40,7 @@ def run_retopology(directory,mode):
     for path in (exe,blender,source,geometry):
         if not path.is_file(): raise FileNotFoundError(path)
     if mode not in ('single','multi'): raise ValueError('Unknown view mode')
-    lower,upper=(1000,1500) if mode=='single' else (2000,3000)
+    lower,upper=vertex_budget(mode,directory)
     desired=(lower+upper)//2; request_count=desired*2
     output=directory/'retopology'; output.mkdir(exist_ok=True)
     source_hash=hashlib.sha256(source.read_bytes()).hexdigest()

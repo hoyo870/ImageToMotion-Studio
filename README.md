@@ -48,7 +48,7 @@ Windows에서 이미지 → 텍스처가 포함된 3D → 메시 정리·리토�
 
 이미지 한 장 또는 같은 폴더의 `front.png`, `back.png`, `left.png`, `right.png` 네 장을 `generate_3d.bat`에 드래그합니다. 멀티뷰는 확장자를 제외한 이름이 정확히 front/back/left/right여야 하며 중복·누락 시 생성하지 않습니다.
 
-형상 입력은 1024, 투영 텍스처 입력은 2048로 준비합니다. 2048 리사이징은 새로운 디테일을 추론하는 AI 초해상도가 아닙니다. 투영 방식의 뒷면·가려진 부위 품질에는 한계가 있습니다.
+기본 형상 입력은 1024, 투영 텍스처 입력은 2048로 준비합니다. 루트 `.env`에서 입력을 1536·2048로 변경할 수 있습니다. 2048 리사이징은 새로운 디테일을 추론하는 AI 초해상도가 아닙니다. 투영 방식의 뒷면·가려진 부위 품질에는 한계가 있습니다.
 
 최종 결과는 입력 이미지 옆에 같은 이름의 GLB로 복사합니다. 멀티뷰는 front를 기준으로 하며, 이름 충돌 시 기존 파일을 덮어쓰지 않습니다. 자세한 보고서와 수정 가능한 Blend는 `runtime/ComfyUI_3D_1024/results`에 보관합니다. 최종 Blender 메시 정점 목표는 싱글 1000~1500, 멀티 2000~3000이며 GLB 정점은 UV 경계 때문에 더 많을 수 있습니다.
 
@@ -58,7 +58,7 @@ Windows에서 이미지 → 텍스처가 포함된 3D → 메시 정리·리토�
 
 Instant Meshes 결과가 형상 보존 검사에 실패하거나 실행이 120초를 넘기면 Blender에서 원본 기반 표면을 직접 감소시키는 대체 방식으로 한 번 재시도합니다. 대체 결과는 삼각형 위주이며 동일한 정점 예산과 형상 검사, 2048 재베이킹을 통과해야 저장됩니다. 두 방식 모두 실패하면 원본을 보존하고 오류로 중단합니다. 사용한 방식과 최초 형상 거절·타임아웃 사유는 `retopo_report.json`에 기록합니다.
 
-Voxel 보수 표면에서 정점 감소가 멈추거나 형상 검사를 통과하지 못하면 보수 전의 정리된 원본 표면으로 추가 재시도합니다. 거의 평면인 면을 정리하고 중복 면 검증 후 감소를 다시 적용하며, 정점 상한과 형상 허용치는 유지합니다. 원본 표면 경로는 경계·비정상 연결이 남을 수 있으므로 `retopo_report.json`과 Blender에서 보수 검토가 필요합니다. 한글 이미지 파일명도 사용할 수 있으며, 생성 입력은 내부에서 `front_1024.png` 등의 이름으로 준비합니다.
+Voxel 보수 표면에서 정점 감소가 멈추거나 형상 검사를 통과하지 못하면 보수 전의 정리된 원본 표면으로 추가 재시도합니다. 거의 평면인 면을 정리하고 중복 면 검증 후 감소를 다시 적용하며, 정점 상한과 형상 허용치는 유지합니다. 원본 표면 경로는 경계·비정상 연결이 남을 수 있으므로 `retopo_report.json`과 Blender에서 보수 검토가 필요합니다. 한글 이미지 파일명도 사용할 수 있으며, 생성 입력은 내부에서 `front_shape.png` 등의 이름으로 준비합니다.
 
 정리 후 정점 수가 하한보다 적으면 먼저 형상을 검사합니다. 형상이 정상인 경우 기존 에지를 분할해 싱글뷰 1000·멀티뷰 2000정점 하한을 맞추며 표면을 이동하거나 디테일을 추론하지 않습니다. 형상 자체가 손상된 결과는 정점만 추가해 통과시키지 않고 대체 표면으로 재시도합니다. 원본 표면에는 시간이 오래 걸릴 수 있는 평면 정리를 적용하지 않습니다.
 
@@ -126,3 +126,31 @@ Mixamo 서비스에서의 오토 리깅과 Blender의 Mixamo Rig 컨트롤 리�
 `setup.bat`은 CUDA 연산, pip check, 네이티브 모듈, 모델·도구 경로, 격리된 Blender 애드온, SOMA30 리타게팅·발가락 보정과 Mixamo 컨트롤 리그 생성을 검사합니다. 전체 GPU 생성은 시간이 걸리므로 `run_generation_test.bat`으로 별도 실행합니다.
 
 검증 범위는 [docs/VALIDATION.md](docs/VALIDATION.md), 외부 구성요소·라이선스는 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)를 확인하세요. 모델은 원 공급처에서 내려받으며 각 모델의 조건이 별도로 적용됩니다.
+
+## 해상도·모델·정점 설정
+
+`setup.bat`은 루트 `.env.example`을 `.env`로 복사합니다. 기존 `.env`는 보존합니다. 설정을 바꾼 뒤 다음 `generate_3d.bat` 실행부터 적용됩니다. OS 환경 변수는 `.env`보다 우선합니다. 잘못된 값은 생성 전에 오류로 중단합니다. `.env`는 Git에 포함하지 않습니다.
+
+```dotenv
+MODEL_PROFILE=TRELLIS2_FP8
+GGUF_QUANT=Q4_K_M
+INPUT_RESOLUTION=1536
+SHAPE_RESOLUTION=1536
+TEXTURE_RESOLUTION=2048
+SINGLE_VERTEX_MIN=1000
+SINGLE_VERTEX_MAX=1500
+MULTI_VERTEX_MIN=2000
+MULTI_VERTEX_MAX=3000
+```
+
+`MODEL_PROFILE`은 기존 `TRELLIS2_FP8`, `TRELLIS2_GGUF`, `PIXAL3D_GGUF` 중 선택합니다. GGUF 선택 시 실행 전 전용 노드와 해당 Q4_K_M 가중치를 준비합니다. 모델 버전·용량·SHA256은 `manifests/gguf-models.json`에 고정합니다. 원본 공유 Python과 모델 폴더를 변경하지 않고 `gguf_deps`, `gguf_models`에 설치합니다. 최초 기본 설치는 기존 FP8 환경도 준비합니다. 전체 재설치 없이 모델 전환이 가능합니다.
+
+`INPUT_RESOLUTION`은 1024 / 1536 / 2048이며 CPU에서 비율을 유지해 패딩·리사이징합니다. 원본을 덮어쓰지 않습니다. 큰 입력이 형상 생성 해상도를 자동으로 올리지는 않습니다. `SHAPE_RESOLUTION`은 요청 값이며 VRAM에 맞춰 낮춥니다. RTX 3070 Ti 8GB는 입력 1536·2048을 사용할 수 있지만 실제 형상은 1024로 제한합니다. 12GB 미만은 1024, 12GB 이상은 최대 1536을 적용하며 Pixal3D는 24GB 미만에서 1024로 제한합니다. 설치된 노드의 입력 규격에 맞춰 2048 형상 요청도 최대 1536입니다. 이 기준은 보수적인 정책이며 모든 이미지에서 메모리 부족이 없다는 보장은 아닙니다.
+
+정점 범위는 Blender 최종 메시의 기하 정점 기준입니다. GLB의 UV 경계 정점 수는 더 많을 수 있습니다. 설정은 작업 폴더 `settings.json`에 고정해 진행 중 `.env`를 바꿔도 해당 작업의 검증·복사 기준이 달라지지 않습니다. 정점 목표를 낮추면 형상 보존 검사를 통과하지 못할 수 있으며 검사를 끄지는 않습니다.
+
+GGUF 관련 원본: [ComfyUI-Trellis2-GGUF](https://github.com/Aero-Ex/ComfyUI-Trellis2-GGUF), [ComfyUI-GGUF](https://github.com/city96/ComfyUI-GGUF), [Trellis2 GGUF](https://huggingface.co/Aero-Ex/Trellis2-GGUF), [Pixal3D GGUF](https://huggingface.co/Aero-Ex/Pixal3D-GGUF). 이 저장소는 경로 분리 및 1536 분기 호환 패치를 적용합니다.
+
+Pixal3D GGUF의 NAF는 ComfyUI에 포함된 동일 구조의 PyTorch 구현과 고정 SHA256 가중치를 사용합니다. 별도의 Windows natten 빌드는 필요하지 않습니다. 선택적 MoGe 자동 다운로드는 사용하지 않고 상위 구현의 기본 카메라 값을 사용하므로 카메라 추정이 필요한 사진에서는 형상 품질에 차이가 있을 수 있습니다. GGUF 멀티뷰는 해당 노드의 이미지 조건 결합 방식이며, 모든 이미지 조합에서 정확한 형상 복원을 보장하지 않습니다.
+
+검증 범위와 실제 결과는 [환경 설정 검증 기록](docs/ENV_CONFIG_VALIDATION.md)을 확인하세요.

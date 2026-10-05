@@ -94,5 +94,29 @@
   "python-jit-headers": {
     "bytes": 437666,
     "sha256": "145cde69c753dd5a78f4525ef1f5cbe0f2642678fdefd9e79e2bbea1a91d80ea"
+  },
+  "trellis-gguf": {
+    "url": "https://codeload.github.com/Aero-Ex/ComfyUI-Trellis2-GGUF/zip/b3b9e951874c5fb5c936566c93b908299be08b2c",
+    "bytes": 52850246,
+    "sha256": "7105ccc158b987a62ff0c1f78cf0a394de58e3405af8fb034a72af642073ad20",
+    "revision": "b3b9e951874c5fb5c936566c93b908299be08b2c"
+  },
+  "gguf-wheel": {
+    "url": "https://files.pythonhosted.org/packages/b3/bb/d71d6da82763528c2c2ed6b59a9d6142c6595545a4c448e2085d155e88c2/gguf-0.19.0-py3-none-any.whl",
+    "filename": "gguf-0.19.0-py3-none-any.whl",
+    "bytes": 118475,
+    "sha256": "70bcd10edfe697fb2dad6e40af2234b9d8ece9a41a99761405121ebda1c3c1cd"
+  },
+  "gguf-ops": {
+    "url": "https://codeload.github.com/city96/ComfyUI-GGUF/zip/6ea2651e7df66d7585f6ffee804b20e92fb38b8a",
+    "bytes": 38051,
+    "sha256": "aad273a0b774684285b4496f6edff7e2293bd29d71ef89926d6861bfdf4947ac",
+    "revision": "6ea2651e7df66d7585f6ffee804b20e92fb38b8a"
+  },
+  "naf-weights": {
+    "url": "https://github.com/valeoai/NAF/releases/download/model/naf_release.pth",
+    "bytes": 2664431,
+    "sha256": "c096c1ab2217a5c3ac136365f721685e2201379cb69d509cfb0261183847c98f",
+    "filename": "naf_release.pth"
   }
 }

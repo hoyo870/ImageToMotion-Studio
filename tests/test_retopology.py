@@ -1,11 +1,13 @@
 """Shape fallback must never hide unrelated Blender errors or old rejections."""
 import importlib.util
 import json
+import sys
 from pathlib import Path
 import tempfile
 import unittest
 from unittest.mock import patch
 from types import SimpleNamespace
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'pipeline/3d'))
 
 spec=importlib.util.spec_from_file_location('retopo_pipeline',Path(__file__).resolve().parents[1]/'pipeline/3d/retopo_pipeline.py')
 pipeline=importlib.util.module_from_spec(spec)

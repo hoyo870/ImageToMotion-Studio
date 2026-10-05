@@ -1,0 +1,244 @@
+{
+  "TRELLIS2_GGUF": {
+    "directory": "Trellis2",
+    "repo": "Aero-Ex/Trellis2-GGUF",
+    "revision": "edf81aef93af0823ac8721da3c9cd3c52d539f87",
+    "files": [
+      {
+        "destination": "pipeline.json",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/pipeline.json",
+        "bytes": 4186,
+        "sha256": "222c359ab1ed9bc6735a640a34f95d47f8681b9bc4aaa101bfb80274676253c6"
+      },
+      {
+        "destination": "shape_dec_next_dc_f16c32_fp16.json",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/decoders/Stage2/shape_dec_next_dc_f16c32_fp16.json",
+        "bytes": 678,
+        "sha256": "5f1b856dffce79466fb18f5f0eefc08f08c673b24b3c05b20359c0b6d318a209"
+      },
+      {
+        "destination": "shape_dec_next_dc_f16c32_fp16.safetensors",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/decoders/Stage2/shape_dec_next_dc_f16c32_fp16.safetensors",
+        "bytes": 948490494,
+        "sha256": "e3b718d3e43e4f8780e9a24ac6fff231811a67e3b058e336e10fe654c911d581"
+      },
+      {
+        "destination": "shape_enc_next_dc_f16c32_fp16.json",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/encoders/shape_enc_next_dc_f16c32_fp16.json",
+        "bytes": 653,
+        "sha256": "5a960a5c419d70f8d4a7a6b6e52ae689cd948c88bd7ed92346adfbf82cd12007"
+      },
+      {
+        "destination": "shape_enc_next_dc_f16c32_fp16.safetensors",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/encoders/shape_enc_next_dc_f16c32_fp16.safetensors",
+        "bytes": 708797208,
+        "sha256": "f37c5ff5b983b68e9946060000f09bc131f3e84318a2c8b7430a81e4b4636c41"
+      },
+      {
+        "destination": "ss_flow_img_dit_1_3B_64_bf16.json",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/refiner/ss_flow_img_dit_1_3B_64_bf16.json",
+        "bytes": 467,
+        "sha256": "6cdfb636854f60ffcadd8c49244169cd449f34c5ccdb55b5ff7c04678f9c399e"
+      },
+      {
+        "destination": "ss_flow_img_dit_1_3B_64_bf16_Q4_K_M.gguf",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/refiner/ss_flow_img_dit_1_3B_64_bf16_Q4_K_M.gguf",
+        "bytes": 788950208,
+        "sha256": "67a521fff20c9fb97d87d1a71feea4d3ead17d458eb0bbc86feb4ed87411b9d2"
+      },
+      {
+        "destination": "ss_dec_conv3d_16l8_fp16.json",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/decoders/Stage1/ss_dec_conv3d_16l8_fp16.json",
+        "bytes": 245,
+        "sha256": "646781293f1cda74720de85d1cef50a957fb4aebd9a4bd014e454e32f2330ac5"
+      },
+      {
+        "destination": "ss_dec_conv3d_16l8_fp16.safetensors",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/decoders/Stage1/ss_dec_conv3d_16l8_fp16.safetensors",
+        "bytes": 147591972,
+        "sha256": "1c76d4a40519aa2d711cc263a8404105231ac26db31d946bed48b84fee79009a"
+      },
+      {
+        "destination": "tex_dec_next_dc_f16c32_fp16.json",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/decoders/Stage2/tex_dec_next_dc_f16c32_fp16.json",
+        "bytes": 705,
+        "sha256": "22074e4ab5b28e2b72d33a3fe61bf416134b89e12d0fc5c729f37da75da0c4d1"
+      },
+      {
+        "destination": "tex_dec_next_dc_f16c32_fp16.safetensors",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/decoders/Stage2/tex_dec_next_dc_f16c32_fp16.safetensors",
+        "bytes": 948458812,
+        "sha256": "97ea69addea2ecd9312910f5f548234665eef51c088386180b7cd5b258645e3c"
+      },
+      {
+        "destination": "slat_flow_imgshape2tex_dit_1_3B_512_bf16.json",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/texture/slat_flow_imgshape2tex_dit_1_3B_512_bf16.json",
+        "bytes": 458,
+        "sha256": "3093796257a62f838d2e5578ac4580ca3b7d88d10b87d348065d3fdfcc4c2077"
+      },
+      {
+        "destination": "slat_flow_imgshape2tex_dit_1_3B_512_bf16_Q4_K_M.gguf",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/texture/slat_flow_imgshape2tex_dit_1_3B_512_bf16_Q4_K_M.gguf",
+        "bytes": 789441824,
+        "sha256": "d63c08cdab36fdc35736aa3c8aab92214edf02c6fe13fe4a0090e717841833b5"
+      },
+      {
+        "destination": "slat_flow_imgshape2tex_dit_1_3B_1024_bf16.json",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/texture/slat_flow_imgshape2tex_dit_1_3B_1024_bf16.json",
+        "bytes": 458,
+        "sha256": "31f4fdad9974930e5e9324ac9dfb6ef7de6b30cea51854ba515ef827a8d353b2"
+      },
+      {
+        "destination": "slat_flow_imgshape2tex_dit_1_3B_1024_bf16_Q4_K_M.gguf",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/texture/slat_flow_imgshape2tex_dit_1_3B_1024_bf16_Q4_K_M.gguf",
+        "bytes": 789441824,
+        "sha256": "56819e6b768ad8f7bfd79a1cc9ab322647ba0baf5b46eadea098d128d3486977"
+      },
+      {
+        "destination": "slat_flow_img2shape_dit_1_3B_512_bf16.json",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/shape/slat_flow_img2shape_dit_1_3B_512_bf16.json",
+        "bytes": 458,
+        "sha256": "ddbd7a1d34ce9a8e7af2f6ef9ae686d9ab49f69e62dacb98d8409b511cdbd5e2"
+      },
+      {
+        "destination": "slat_flow_img2shape_dit_1_3B_512_bf16_Q4_K_M.gguf",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/shape/slat_flow_img2shape_dit_1_3B_512_bf16_Q4_K_M.gguf",
+        "bytes": 789245216,
+        "sha256": "14f8bb3e8a35e7a72dc31bedc5486da4e1c1d129baf13b40f8d3422ed6265f83"
+      },
+      {
+        "destination": "ss_dec_conv3d_16l8_fp16.json",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/decoders/Stage1/ss_dec_conv3d_16l8_fp16.json",
+        "bytes": 245,
+        "sha256": "646781293f1cda74720de85d1cef50a957fb4aebd9a4bd014e454e32f2330ac5"
+      },
+      {
+        "destination": "ss_dec_conv3d_16l8_fp16.safetensors",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/decoders/Stage1/ss_dec_conv3d_16l8_fp16.safetensors",
+        "bytes": 147591972,
+        "sha256": "1c76d4a40519aa2d711cc263a8404105231ac26db31d946bed48b84fee79009a"
+      },
+      {
+        "destination": "slat_flow_img2shape_dit_1_3B_1024_bf16.json",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/shape/slat_flow_img2shape_dit_1_3B_1024_bf16.json",
+        "bytes": 458,
+        "sha256": "7ebd6d367393f52fee9e92c2b3d727a9026a338549c6a6fa84c7ea122140ffdd"
+      },
+      {
+        "destination": "slat_flow_img2shape_dit_1_3B_1024_bf16_Q4_K_M.gguf",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/shape/slat_flow_img2shape_dit_1_3B_1024_bf16_Q4_K_M.gguf",
+        "bytes": 789245216,
+        "sha256": "4078c6ed5051f022362141f54059bea0408cfafd762d434753948d1e3cd3edf7"
+      }
+    ]
+  },
+  "PIXAL3D_GGUF": {
+    "directory": "Pixal3D-GGUF",
+    "repo": "Aero-Ex/Pixal3D-GGUF",
+    "revision": "1c2630e408cde95f7bac9c65028404aa49796065",
+    "files": [
+      {
+        "destination": "pipeline.json",
+        "url": "https://huggingface.co/Aero-Ex/Pixal3D-GGUF/resolve/1c2630e408cde95f7bac9c65028404aa49796065/pipeline.json",
+        "bytes": 4068,
+        "sha256": "1647217de06e32477702d14895e826fea73497d94537b809a53637f13482a237"
+      },
+      {
+        "destination": "shape_dec_next_dc_f16c32_fp16.json",
+        "url": "https://huggingface.co/Aero-Ex/Pixal3D-GGUF/resolve/1c2630e408cde95f7bac9c65028404aa49796065/decoder/shape_dec_next_dc_f16c32_fp16.json",
+        "bytes": 678,
+        "sha256": "5f1b856dffce79466fb18f5f0eefc08f08c673b24b3c05b20359c0b6d318a209"
+      },
+      {
+        "destination": "shape_dec_next_dc_f16c32_fp16.safetensors",
+        "url": "https://huggingface.co/Aero-Ex/Pixal3D-GGUF/resolve/1c2630e408cde95f7bac9c65028404aa49796065/decoder/shape_dec_next_dc_f16c32_fp16.safetensors",
+        "bytes": 948490494,
+        "sha256": "e3b718d3e43e4f8780e9a24ac6fff231811a67e3b058e336e10fe654c911d581"
+      },
+      {
+        "destination": "shape_enc_next_dc_f16c32_fp16.json",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/encoders/shape_enc_next_dc_f16c32_fp16.json",
+        "bytes": 653,
+        "sha256": "5a960a5c419d70f8d4a7a6b6e52ae689cd948c88bd7ed92346adfbf82cd12007"
+      },
+      {
+        "destination": "shape_enc_next_dc_f16c32_fp16.safetensors",
+        "url": "https://huggingface.co/Aero-Ex/Trellis2-GGUF/resolve/edf81aef93af0823ac8721da3c9cd3c52d539f87/encoders/shape_enc_next_dc_f16c32_fp16.safetensors",
+        "bytes": 708797208,
+        "sha256": "f37c5ff5b983b68e9946060000f09bc131f3e84318a2c8b7430a81e4b4636c41"
+      },
+      {
+        "destination": "ss_flow_img_dit_1_3B_64_bf16.json",
+        "url": "https://huggingface.co/Aero-Ex/Pixal3D-GGUF/resolve/1c2630e408cde95f7bac9c65028404aa49796065/Sparse/ss_flow_img_dit_1_3B_64_bf16.json",
+        "bytes": 503,
+        "sha256": "2b3ef4c63b72a3de8adf745bd9d9d36b7960bdd7ba3740a6fa4d18fea6c475dd"
+      },
+      {
+        "destination": "ss_flow_img_dit_1_3B_64_bf16_Q4_K_M.gguf",
+        "url": "https://huggingface.co/Aero-Ex/Pixal3D-GGUF/resolve/1c2630e408cde95f7bac9c65028404aa49796065/Sparse/ss_flow_img_dit_1_3B_64_bf16_Q4_K_M.gguf",
+        "bytes": 758014720,
+        "sha256": "8227521189ef5a24f01afdf49b7673cfd06a50a592cd8943f620a963d9f1757c"
+      },
+      {
+        "destination": "tex_dec_next_dc_f16c32_fp16.json",
+        "url": "https://huggingface.co/Aero-Ex/Pixal3D-GGUF/resolve/1c2630e408cde95f7bac9c65028404aa49796065/decoder/tex_dec_next_dc_f16c32_fp16.json",
+        "bytes": 705,
+        "sha256": "22074e4ab5b28e2b72d33a3fe61bf416134b89e12d0fc5c729f37da75da0c4d1"
+      },
+      {
+        "destination": "tex_dec_next_dc_f16c32_fp16.safetensors",
+        "url": "https://huggingface.co/Aero-Ex/Pixal3D-GGUF/resolve/1c2630e408cde95f7bac9c65028404aa49796065/decoder/tex_dec_next_dc_f16c32_fp16.safetensors",
+        "bytes": 948458812,
+        "sha256": "97ea69addea2ecd9312910f5f548234665eef51c088386180b7cd5b258645e3c"
+      },
+      {
+        "destination": "slat_flow_imgshape2tex_dit_1_3B_1024_bf16.json",
+        "url": "https://huggingface.co/Aero-Ex/Pixal3D-GGUF/resolve/1c2630e408cde95f7bac9c65028404aa49796065/texture/slat_flow_imgshape2tex_dit_1_3B_1024_bf16.json",
+        "bytes": 535,
+        "sha256": "f18455729d08d2ce7ef809f947ffa47f6f468b3bcf8a86473e8c326e80128ac2"
+      },
+      {
+        "destination": "slat_flow_imgshape2tex_dit_1_3B_1024_bf16_Q4_K_M.gguf",
+        "url": "https://huggingface.co/Aero-Ex/Pixal3D-GGUF/resolve/1c2630e408cde95f7bac9c65028404aa49796065/texture/slat_flow_imgshape2tex_dit_1_3B_1024_bf16_Q4_K_M.gguf",
+        "bytes": 784231008,
+        "sha256": "5c7ef624c7f4a4874c0e4c775afa11907cad4084f133bf4218f4c558729fee1b"
+      },
+      {
+        "destination": "slat_flow_img2shape_dit_1_3B_512_bf16.json",
+        "url": "https://huggingface.co/Aero-Ex/Pixal3D-GGUF/resolve/1c2630e408cde95f7bac9c65028404aa49796065/shape/slat_flow_img2shape_dit_1_3B_512_bf16.json",
+        "bytes": 535,
+        "sha256": "2f7b736e8535aae96e7c41e8d123c24a14ee809fc25bea76eeac72643d21b997"
+      },
+      {
+        "destination": "slat_flow_img2shape_dit_1_3B_512_bf16_Q4_K_M.gguf",
+        "url": "https://huggingface.co/Aero-Ex/Pixal3D-GGUF/resolve/1c2630e408cde95f7bac9c65028404aa49796065/shape/slat_flow_img2shape_dit_1_3B_512_bf16_Q4_K_M.gguf",
+        "bytes": 784132704,
+        "sha256": "45affe7302ae4e6ff124c8bea9b21cfe8340b75dea5610a7f1369b302ffbd389"
+      },
+      {
+        "destination": "ss_dec_conv3d_16l8_fp16.json",
+        "url": "https://huggingface.co/Aero-Ex/Pixal3D-GGUF/resolve/1c2630e408cde95f7bac9c65028404aa49796065/decoder/ss_dec_conv3d_16l8_fp16.json",
+        "bytes": 245,
+        "sha256": "646781293f1cda74720de85d1cef50a957fb4aebd9a4bd014e454e32f2330ac5"
+      },
+      {
+        "destination": "ss_dec_conv3d_16l8_fp16.safetensors",
+        "url": "https://huggingface.co/Aero-Ex/Pixal3D-GGUF/resolve/1c2630e408cde95f7bac9c65028404aa49796065/decoder/ss_dec_conv3d_16l8_fp16.safetensors",
+        "bytes": 147591972,
+        "sha256": "1c76d4a40519aa2d711cc263a8404105231ac26db31d946bed48b84fee79009a"
+      },
+      {
+        "destination": "slat_flow_img2shape_dit_1_3B_1024_bf16.json",
+        "url": "https://huggingface.co/Aero-Ex/Pixal3D-GGUF/resolve/1c2630e408cde95f7bac9c65028404aa49796065/shape/slat_flow_img2shape_dit_1_3B_1024_bf16.json",
+        "bytes": 535,
+        "sha256": "f47fca56311959a643e8cfd2750229a2c53cbab0027406d8426cd564ce4fb5bc"
+      },
+      {
+        "destination": "slat_flow_img2shape_dit_1_3B_1024_bf16_Q4_K_M.gguf",
+        "url": "https://huggingface.co/Aero-Ex/Pixal3D-GGUF/resolve/1c2630e408cde95f7bac9c65028404aa49796065/shape/slat_flow_img2shape_dit_1_3B_1024_bf16_Q4_K_M.gguf",
+        "bytes": 784132704,
+        "sha256": "ba25d6d25568c9ae61c93fefea75d68a4235a9b6b7c34ec92064cb9edb002ae1"
+      }
+    ]
+  }
+}

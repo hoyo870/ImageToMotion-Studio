@@ -248,6 +248,10 @@ def install_blender(key, candidates):
 
 
 def setup(fresh=False):
+    if not (ROOT/'.env').exists(): shutil.copy2(ROOT/'.env.example',ROOT/'.env')
+    sys.path.insert(0,str(ROOT/'pipeline/3d'))
+    from studio_settings import load_settings
+    load_settings(ROOT)
     if os.name != 'nt':
         raise RuntimeError('This release supports Windows x64 only')
     if sys.getwindowsversion().build < 18362:
@@ -359,6 +363,8 @@ def setup(fresh=False):
     config = dict(three=str(three), python=str(py), blender=str(ui), post_blender=str(post),
                   cpp=str(native), profile=str(profile), hardware=info)
     (STATE / 'config.json').write_text(json.dumps(config, indent=2))
+    from gguf_setup import ensure_gguf
+    ensure_gguf(config)
     env = blender_env(config)
     run([ui, '--factory-startup', '-b', '--python-exit-code', '1', '--python',
          ROOT / 'installer/configure_blender.py', '--', RUNTIME], env=env)
@@ -394,7 +400,7 @@ def verify(config):
             raise RuntimeError('Kimodo runtime integrity check failed: ' + name)
     # Validate missing model/tool paths through the shipped pipeline, without GPU generation.
     code = "import sys;sys.path.insert(0,sys.argv[1]);import drag_drop_3d,retopo_pipeline;drag_drop_3d.preflight_models();retopo_pipeline.preflight_tools();print('PREFLIGHT_OK')"
-    output([config['python'], '-c', code, config['three']])
+    output([config['python'], '-c', code, config['three']],env={**os.environ,'IMT_CONFIG_PATH':str(STATE/'config.json')})
     run([config['blender'], '--factory-startup', '-b', '--python-exit-code', '1', '--python',
          ROOT / 'tests/blender_smoke.py', '--', ROOT], env=blender_env(config), timeout=300)
     (STATE / 'verification.json').write_text(json.dumps(dict(status='passed', hardware=details,

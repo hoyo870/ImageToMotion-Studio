@@ -6,6 +6,7 @@ __pycache__/
 *.pyc
 *.part
 local_config.json
+.env
 !vendor/runtime/kimodo-cpp-windows-x64.zip
 !vendor/runtime/Instant Meshes.exe
 !vendor/runtime/python-3.12-include-libs.zip

@@ -37,3 +37,9 @@ Models are NOT redistributed in this Git repository. Immutable revisions, file s
 Kimodo and Llama-derived weights retain upstream NVIDIA/Meta/model-specific terms; availability for download is not a substitute for those terms. Third-party providers may change availability. The installer never copies account tokens, login sessions or personal caches into the repository.
 
 PixelArtistry reference: https://github.com/pixelartistry/PixelArtistry-Watertight-Meshes. This package uses a separate validated 1024/2048 workflow; it does not redistribute PixelArtistry's installer or claim authorship of its work.
+
+GGUF loader: https://github.com/Aero-Ex/ComfyUI-Trellis2-GGUF and https://github.com/city96/ComfyUI-GGUF. Source archives retain upstream license files; City96 operations are Apache-2.0. Quantized models: https://huggingface.co/Aero-Ex/Trellis2-GGUF and https://huggingface.co/Aero-Ex/Pixal3D-GGUF. Model-specific terms continue to apply. The gguf Python package retains its notices in gguf_deps.
+
+NAF weights: https://github.com/valeoai/NAF (Apache-2.0), release model/naf_release.pth. The Windows path uses the NAF implementation vendored by the pinned ComfyUI revision.
+
+installer/gguf_compat.py includes neighborhood attention adapted from the pinned ComfyUI naf.py implementation (GPL-3.0). It retains that license for the derivative code; the underlying NAF architecture/weights are Apache-2.0.

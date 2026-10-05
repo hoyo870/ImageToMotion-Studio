@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import shutil
 from pathlib import Path
 import subprocess
 import sys
@@ -31,6 +32,9 @@ def main():
         os.startfile(ROOT/'examples/index.html');return 0
     if not opts.arguments:
         print('Drag one image, or front/back/left/right images together onto generate_3d.bat.');return 1
+    shutil.copytree(ROOT/'pipeline/3d',Path(config['three']),dirs_exist_ok=True)
+    from gguf_setup import ensure_gguf
+    ensure_gguf(config)
     return subprocess.call([config['python'],str(Path(config['three'])/'drag_drop_3d.py')]+opts.arguments+extra,
                            env={**os.environ,'PYTHONUTF8':'1','PYTHONIOENCODING':'utf-8','IMT_CONFIG_PATH':str(p)})
 if __name__=='__main__':
